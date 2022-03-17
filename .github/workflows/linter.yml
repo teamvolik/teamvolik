@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  flake8-check:
+  linter-check:
     name: Run Python Linter
     runs-on: ubuntu-20.04
 
