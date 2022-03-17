@@ -9,7 +9,7 @@ on:
 jobs:
   flake8-check:
     name: Run flake8
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Check out Git repository
