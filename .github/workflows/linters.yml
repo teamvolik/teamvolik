@@ -27,4 +27,3 @@ jobs:
         with:
           flake8: true
           black: true
-          mypy: true
