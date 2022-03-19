@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.8
+#!/usr/bin/env python3.10
 
 import logging
 import json
@@ -26,11 +26,31 @@ def help_command(update: Update, context: CallbackContext) -> None:
 
 def echo(update: Update, context: CallbackContext) -> None:
     """Echo the user message."""
-    pass
+    update.message.reply_text(update.message.text)
 
 def main() -> None:
     """Start the bot."""
-    pass
+    config_path = "config.json"
+    with open(config_path, "r") as config_file:
+        config = json.loads(config_file.read())
+
+    # Create the Updater to connect program with tg bot via token
+    updater = Updater(config["token"])
+
+    # Get the dispatcher to register handlers on it
+    dispatcher = updater.dispatcher
+
+    # Binding commands to the dispatcher
+    dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(CommandHandler("help", help_command))
+    
+    # Binding echo function to the dispatcher to echo the message on Telegram
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+
+    updater.start_polling()
+
+    updater.idle()
+    
 
 if __name__ == "__main__":
-    pass
+    main()
