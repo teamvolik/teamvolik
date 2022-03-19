@@ -1,4 +1,4 @@
-name: Run Python Linter
+name: Run Linters
 
 on:
   push:
@@ -6,8 +6,8 @@ on:
   pull_request:
 
 jobs:
-  linter-check:
-    name: Run Python Linter
+  linters-check:
+    name: Run Linters
     runs-on: ubuntu-20.04
 
     steps:
@@ -19,9 +19,12 @@ jobs:
         with:
           python-version: 3.9.10
 
-      - name: Python Linter
-        uses: sunnysid3up/python-linter@master
+      - name: Install Python dependencies
+        run: pip install flake8 mypy black
+
+      - name: Run flake8
+        uses: wearerequired/lint-action@v1
         with:
-          source: "src"
-          mypy-options: "--ignore-missing-imports --show-error-codes"
-          isort-options: "-w 100"
+          flake8: true
+          black: true
+          mypy: true
