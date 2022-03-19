@@ -22,7 +22,7 @@ jobs:
       - name: Install Python dependencies
         run: pip install flake8 mypy black
 
-      - name: Run flake8
+      - name: Run linters
         uses: wearerequired/lint-action@v1
         with:
           flake8: true
