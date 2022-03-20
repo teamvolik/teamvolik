@@ -1,27 +1,28 @@
-on:
-  push:
-    branches: [ main ]
-  pull_request:
+- name: Run tests
+  on:
+    push:
+      branches: [ main ]
+    pull_request:
 
-jobs:
-  tests:
-    name: Run tests
-    runs-on: ubuntu-20.04
+  jobs:
+    tests:
+      name: Run tests
+      runs-on: ubuntu-20.04
 
-    steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v3
+      steps:
+        - name: Check out Git repository
+          uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: 3.10.3
+        - name: Set up Python
+          uses: actions/setup-python@v3
+          with:
+            python-version: 3.10.3
 
-      - name: Upgrade pip
-        run: pip install --upgrade pip
+        - name: Upgrade pip
+          run: pip install --upgrade pip
 
-      - name: Install Python dependencies
-        run: pip install pysqlite3
+        - name: Install Python dependencies
+          run: pip install pysqlite3
 
-      - name: Run tests
-        run: python -m unittest
+        - name: Run tests
+          run: python -m unittest
