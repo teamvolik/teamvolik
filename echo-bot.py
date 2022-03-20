@@ -11,9 +11,7 @@ from telegram.ext import (
     CallbackContext,
 )
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
+logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 
 logger = logging.getLogger(__name__)
 
@@ -21,16 +19,12 @@ logger = logging.getLogger(__name__)
 def start(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
-    update.message.reply_markdown_v2(
-        rf"Hi {user.mention_markdown_v2()}\!", reply_markup=ForceReply(selective=True)
-    )
+    update.message.reply_markdown_v2(rf"Hi {user.mention_markdown_v2()}\!", reply_markup=ForceReply(selective=True))
 
 
 def help_command(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
-    update.message.reply_text(
-        "This is an echo bot that duplicates all messages sent to it.\nTo start working with the bot, type /start"
-    )
+    update.message.reply_text("This is an echo bot that duplicates all messages sent to it.\nTo start working with the bot, type /start")
 
 
 def echo(update: Update, context: CallbackContext) -> None:
