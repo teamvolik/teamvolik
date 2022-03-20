@@ -1,4 +1,2 @@
-pysqlite3==0.4.7
-pysqlite3-binary==0.4.7
 pytz==2022.1
 toml==0.10.0
