@@ -26,12 +26,4 @@ jobs:
         run: pip install pydocstyle toml
 
       - name: Run linters
-        run: pydocstyle > report
-
-      - name: Save report
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: pydocstyle-reports
-          path: 'report'
-          retention-days: 1
+        run: pydocstyle
