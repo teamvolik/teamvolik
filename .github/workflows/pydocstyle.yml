@@ -1,26 +1,29 @@
-- name: Run pydocstyle
-  on:
-    push:
-      branches: [ main ]
-    pull_request:
-  jobs:
-    pydocstyle-check:
-      name: Run pydocstyle
-      runs-on: ubuntu-20.04
-      steps:
-        - name: Check out Git repository
-          uses: actions/checkout@v3
+name: Run pydocstyle
 
-        - name: Set up Python
-          uses: actions/setup-python@v3
-          with:
-            python-version: 3.10.3
+on:
+  push:
+    branches: [ main ]
+  pull_request:
 
-        - name: Upgrade pip
-          run: pip install --upgrade pip
+jobs:
+  pydocstyle-check:
+    name: Run pydocstyle
+    runs-on: ubuntu-20.04
 
-        - name: Install Python dependencies
-          run: pip install pydocstyle toml
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
 
-        - name: Run linters
-          run: pydocstyle
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.10.3
+
+      - name: Upgrade pip
+        run: pip install --upgrade pip
+
+      - name: Install Python dependencies
+        run: pip install pydocstyle toml
+
+      - name: Run linters
+        run: pydocstyle
