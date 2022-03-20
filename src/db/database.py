@@ -1,5 +1,5 @@
 """Module that implements all the interactions with database."""
-import pysqlite3 as sqlite3
+import sqlite3
 
 import src.classes.game as game
 import src.classes.player as player
@@ -87,7 +87,8 @@ def add_game(connection: sqlite3.Connection, db_cursor: sqlite3.Cursor, game: ga
     :param db_cursor: database object to interact with database
     :param game: game to add to database
     """
-    db_cursor.execute("""INSERT OR REPLACE INTO games VALUES (NULL, ?, ?, ?, ?) RETURNING id""", game.to_sqlite_table())
+    db_cursor.execute("""INSERT OR REPLACE INTO games VALUES (NULL, ?, ?, ?, ?)""", game.to_sqlite_table())
+    db_cursor.execute("""SELECT max(id) FROM games""")
     game.id = db_cursor.fetchone()[0]
     connection.commit()
     return game

@@ -1,5 +1,5 @@
 import unittest
-import pysqlite3 as sqlite3
+import sqlite3
 
 import src.db.database as database
 import src.classes.game as game

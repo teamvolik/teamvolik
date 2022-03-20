@@ -20,16 +20,10 @@ jobs:
           python-version: 3.10.3
 
       - name: Upgrade pip
-        run: python3.10 -m pip install --upgrade pip
+        run: pip install --upgrade pip
 
       - name: Install Python dependencies
-        run: python3.10 -m pip install -r requirements.txt
-
-      - name: Install pysqlite3
-        run: python3.10 -m pip install pysqlite3-binary
-
-      - name: Validate sqlite3 version
-        run: python3.10 -c "import pysqlite3; print(pysqlite3.sqlite_version);"
+        run: pip install -r requirements.txt
 
       - name: Run tests
-        run: python3.10 -m unittest
+        run: python -m unittest
