@@ -1,4 +1,4 @@
-name: Run Linters
+name: Run pydocstyle
 
 on:
   push:
@@ -6,8 +6,8 @@ on:
   pull_request:
 
 jobs:
-  linters-check:
-    name: Run Linters
+  pydocstyle-check:
+    name: Run pydocstyle
     runs-on: ubuntu-20.04
 
     steps:
@@ -20,10 +20,15 @@ jobs:
           python-version: 3.9.10
 
       - name: Install Python dependencies
-        run: pip install flake8 black
+        run: pip install pydocstyle
 
       - name: Run linters
-        uses: wearerequired/lint-action@v1
+        run: pydocstyle > report
+
+      - name: Save report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
         with:
-          flake8: true
-          black: true
+          name: pydocstyle-reports
+          path: 'report'
+          retention-days: 1
