@@ -23,7 +23,7 @@ jobs:
         run: pip install --upgrade pip
 
       - name: Install Python dependencies
-        run: pip install pydocstyle
+        run: pip install pydocstyle toml
 
       - name: Run linters
         run: pydocstyle > report

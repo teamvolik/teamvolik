@@ -23,7 +23,7 @@ jobs:
         run: pip install --upgrade pip
 
       - name: Install Python dependencies
-        run: pip install unittest pysqlite3
+        run: pip install pysqlite3
 
       - name: Run tests
         run: python -m unittest
