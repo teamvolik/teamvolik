@@ -4,16 +4,16 @@
 class Player:
     """Class that implements player."""
 
-    id = int
-    name = str
-    is_adm = bool
-    games = int
-    pitch = float
-    hold = float
-    passing = float
-    movement = float
-    attacking = float
-    rating = float
+    id: int
+    name: str
+    is_adm: bool
+    games: int
+    pitch: float
+    hold: float
+    passing: float
+    movement: float
+    attacking: float
+    rating: float
 
     def __init__(
         self,

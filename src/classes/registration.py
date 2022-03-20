@@ -6,11 +6,11 @@ import pytz
 class Registration:
     """Class that implements registration."""
 
-    user_id = int
-    game_id = int
-    is_paid = bool
-    is_reserve = bool
-    time = datetime.datetime
+    user_id: int
+    game_id: int
+    is_paid: bool
+    is_reserve: bool
+    time: datetime.datetime
 
     def __init__(self, user_id: int, game_id: int, is_paid: bool = False, is_reserve: bool = False, time: int or None = None) -> None:
         """
@@ -26,7 +26,7 @@ class Registration:
         self.game_id = game_id
         self.is_paid = is_paid
         self.is_reserve = is_reserve
-        if isinstance(self.time, int):
+        if isinstance(time, int):
             self.time = datetime.datetime.fromtimestamp(time)
         else:
             self.time = datetime.datetime.now(tz=pytz.timezone("Europe/Moscow"))

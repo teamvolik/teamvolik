@@ -1,5 +1,5 @@
 """Module that implements all the interactions with database."""
-import sqlite3
+import pysqlite3 as sqlite3
 
 import src.classes.game as game
 import src.classes.player as player

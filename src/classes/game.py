@@ -5,11 +5,11 @@ import datetime
 class Game:
     """Class that implements game."""
 
-    id = int
-    date = datetime.datetime
-    place = str
-    max_players = int
-    description = str
+    id: int
+    date: datetime.datetime
+    place: str
+    max_players: int
+    description: str
 
     def __init__(self, date: int or datetime.datetime, place: str, id: int = 0, max_players: int = 8, description: str = "") -> None:
         """

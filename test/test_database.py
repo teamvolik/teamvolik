@@ -1,5 +1,5 @@
 import unittest
-import sqlite3
+import pysqlite3 as sqlite3
 
 import src.db.database as database
 import src.classes.game as game
@@ -45,7 +45,7 @@ class DatabaseTest(unittest.TestCase):
 
     def test_games_should_have_unique_id(self):
         games = [
-            database.add_game(self.connection, self.db_cursor, game.Game("15.06.2001 21:00", "")),
+            database.add_game(self.connection, self.db_cursor, game.Game("15.06.2001 09:15", "")),
             database.add_game(self.connection, self.db_cursor, game.Game("15.06.2001 21:00", "")),
         ]
         self.assertTrue(len(database.get_games(self.db_cursor)) == 2)
