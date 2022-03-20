@@ -26,7 +26,7 @@ jobs:
         run: python3.10 -m pip install -r requirements.txt
 
       - name: Install pysqlite3
-        run: python3.10 -m pip install pysqlite3
+        run: python3.10 -m pip install pysqlite3-binary
 
       - name: Validate sqlite3 version
         run: python3.10 -c "import pysqlite3; print(pysqlite3.sqlite_version);"
