@@ -1,4 +1,4 @@
-name: Run Linters
+name: Run tests
 
 on:
   push:
@@ -6,8 +6,8 @@ on:
   pull_request:
 
 jobs:
-  linters-check:
-    name: Run Linters
+  tests:
+    name: Run tests
     runs-on: ubuntu-20.04
 
     steps:
@@ -19,11 +19,11 @@ jobs:
         with:
           python-version: 3.10.3
 
-      - name: Install Python dependencies
-        run: pip install flake8 black
+      - name: Upgrade pip
+        run: pip install --upgrade pip
 
-      - name: Run linters
-        uses: wearerequired/lint-action@v1
-        with:
-          flake8: true
-          black: true
+      - name: Install Python dependencies
+        run: pip install pysqlite3
+
+      - name: Run tests
+        run: python -m unittest
