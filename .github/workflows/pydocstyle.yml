@@ -1,5 +1,3 @@
-name: Run pydocstyle
-
 on:
   push:
     branches: [ main ]

@@ -1,5 +1,3 @@
-name: Run Linters
-
 on:
   push:
     branches: [ main ]
