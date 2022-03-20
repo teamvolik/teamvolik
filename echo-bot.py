@@ -1,5 +1,5 @@
 #!/usr/bin/env python3.10
-
+# noqa D100
 import logging
 import json
 from telegram import Update, ForceReply
