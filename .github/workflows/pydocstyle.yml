@@ -17,7 +17,10 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: 3.9.10
+          python-version: 3.10.3
+
+      - name: Upgrade pip
+        run: pip install --upgrade pip
 
       - name: Install Python dependencies
         run: pip install pydocstyle
