@@ -87,8 +87,9 @@ def add_game(connection: sqlite3.Connection, db_cursor: sqlite3.Cursor, game: ga
     :param db_cursor: database object to interact with database
     :param game: game to add to database
     """
-    db_cursor.execute("""INSERT OR REPLACE INTO games VALUES (NULL, ?, ?, ?, ?)""", game.to_sqlite_table())
-    db_cursor.execute("""SELECT max(id) FROM games""")
+    game_info = game.to_sqlite_table()
+    db_cursor.execute("""INSERT OR REPLACE INTO games VALUES (NULL, ?, ?, ?, ?)""", game_info)
+    db_cursor.execute("""SELECT id FROM games WHERE date = ? AND place = ? AND max_players = ? AND description = ?""", game_info)
     game.id = db_cursor.fetchone()[0]
     connection.commit()
     return game
