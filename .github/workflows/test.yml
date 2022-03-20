@@ -25,5 +25,8 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
+      - name: Validate sqlite3 version
+        run: python -c "import pysqlite3; print(pysqlite3.sqlite_version);"
+
       - name: Run tests
         run: python -m unittest
