@@ -159,7 +159,7 @@ def get_games(db_cursor: sqlite3.Cursor) -> [game.Game]:  # type: ignore
     return games
 
 
-def get_future_games(db_cursor: sqlite3.Cursor) -> [game.Game]:
+def get_future_games(db_cursor: sqlite3.Cursor) -> [game.Game]:  # type: ignore
     """
     Get games that will take place in the future.
 
@@ -214,7 +214,7 @@ def get_registrations(db_cursor: sqlite3.Cursor) -> [registration.Registration]:
     return registrations
 
 
-def get_registrations_by_game_id(db_cursor: sqlite3.Cursor, game_id: int) -> [registration.Registration]:
+def get_registrations_by_game_id(db_cursor: sqlite3.Cursor, game_id: int) -> [registration.Registration]:  # type: ignore
     """
     Get a list of registration by game id.
 
@@ -230,7 +230,7 @@ def get_registrations_by_game_id(db_cursor: sqlite3.Cursor, game_id: int) -> [re
     return registrations
 
 
-def get_registrations_by_player_id(db_cursor: sqlite3.Cursor, player_id: int) -> [registration.Registration]:
+def get_registrations_by_player_id(db_cursor: sqlite3.Cursor, player_id: int) -> [registration.Registration]:  # type: ignore
     """
     Get a list of registrations by player id.
 
@@ -261,7 +261,7 @@ def remove_registration(connection: sqlite3.Connection, db_cursor: sqlite3.Curso
 
 
 # ======================================================================================================================
-def get_games_by_player_id(db_cursor: sqlite3.Cursor, player_id: int) -> [game.Game]:
+def get_games_by_player_id(db_cursor: sqlite3.Cursor, player_id: int) -> [game.Game]:  # type: ignore
     """
     Get a list of current games for which the player is registered.
 
@@ -279,7 +279,7 @@ def get_games_by_player_id(db_cursor: sqlite3.Cursor, player_id: int) -> [game.G
     return games
 
 
-def get_players_by_game_id(db_cursor: sqlite3.Cursor, game_id: int) -> [player.Player]:
+def get_players_by_game_id(db_cursor: sqlite3.Cursor, game_id: int) -> [player.Player]:  # type: ignore
     """
     Get a list of players that are signed up for a game.
 
