@@ -72,6 +72,7 @@ def create_tables(connection: sqlite3.Connection, db_cursor: sqlite3.Cursor) -> 
             reg_time INTEGER,
             FOREIGN KEY(user_id) REFERENCES players(id),
             FOREIGN KEY(game_id) REFERENCES games(id)
+            PRIMARY KEY(user_id, game_id)
         );
     """
     )

@@ -301,7 +301,7 @@ def reg_added_to_reserve(update: Update, context: CallbackContext) -> int:
     
     if answer.upper() == "YES":
         db.add_registration(connect, cursor, newreg)
-        reserved_slots: int = len(filter(lambda x: x.is_reserve, db.get_registrations_by_game_id(cursor, chosen_game.id)))
+        reserved_slots: int = len(list(filter(lambda x: x.is_reserve, db.get_registrations_by_game_id(cursor, chosen_game.id))))
         update.message.reply_text(reply["reg_success"] + "\n" + "Your position in the queue:" + str(reserved_slots), reply_markup=kb.get_perm_kb(user))
         return ConversationHandler.END
     elif answer.upper() == "NO":
@@ -376,7 +376,7 @@ def games_show_players(update: Update, context: CallbackContext) -> int:
             
     res_reply = reply["games_player_list"] + players_msg
     if players_msg_reserve != "":
-        res_reply += "\n" + reply["games_reserve_list"] + players_msg_reserve
+        res_reply += "\n\n" + reply["games_reserve_list"] + players_msg_reserve
     
     update.message.reply_text(res_reply, reply_markup=kb.get_perm_kb(user))
     return ConversationHandler.END
