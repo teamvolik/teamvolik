@@ -49,7 +49,8 @@ def cancel(update: Update, context: CallbackContext) -> int:
     :param ``context``: This is a context object passed to the callback called by ``telegram.ext.Handler`` or by the ``telegram.ext.Dispatcher``.
     :return: ConversationHandler.END
     """
-    update.message.reply_text(reply["cancel"], reply_markup=kb.get_perm_kb(connect, cursor, update.message.chat_id))
+    user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
+    update.message.reply_text(reply["cancel"], reply_markup=kb.get_perm_kb(user))
     return ConversationHandler.END
 
 
@@ -62,13 +63,13 @@ def start(update: Update, context: CallbackContext) -> int:
     :param ``context``: This is a context object passed to the callback called by ``telegram.ext.Handler`` or by the ``telegram.ext.Dispatcher``.
     :return: ConversationHandler.END
     """
-    if db.player_is_registered(cursor, update.message.chat_id):
-        update.message.reply_text(reply["error_already_exists"], reply_markup=kb.get_perm_kb(cursor, update.message.chat_id))
+    user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
+    if user.id:
+        update.message.reply_text(reply["error_already_exists"], reply_markup=kb.get_perm_kb(user))
         return ConversationHandler.END
     else:
         update.message.reply_text(reply["start"])
-        reply_markup = ReplyKeyboardMarkup([["Ok"]], one_time_keyboard=True, resize_keyboard=True)
-        update.message.reply_text(reply["ask_perm"], reply_markup=reply_markup)
+        update.message.reply_text(reply["ask_perm"], reply_markup=ReplyKeyboardMarkup([["Ok"]], one_time_keyboard=True, resize_keyboard=True))
         return ASKED_TO_STORE_VDATA
 
 
@@ -80,7 +81,7 @@ def vdata_ask_perm(update: Update, context: CallbackContext) -> int:
     :param ``context``: This is a context object passed to the callback called by ``telegram.ext.Handler`` or by the ``telegram.ext.Dispatcher``.
     :return: int
     """
-    answer = update.message.text
+    answer: str = update.message.text
     if answer.upper() == "OK":
         update.message.reply_text(reply["yes_permission"])
         update.message.reply_text(reply["ask_name"])
@@ -98,13 +99,14 @@ def signup_success(update: Update, context: CallbackContext) -> int:
     :param ``context``: This is a context object passed to the callback called by ``telegram.ext.Handler`` or by the ``telegram.ext.Dispatcher``.
     :return: int
     """
-    name = update.message.text
+    name: str = update.message.text
     if len(name.split()) != len("Full Name".split()):
         update.message.reply_text(reply["error_wrong_name_format"])
         return RECORD_NAME
-    newplayer = player.Player(update.message.chat_id, name, update.message.chat_id in adms)
-    db.add_player(connect, cursor, newplayer)
-    update.message.reply_text(reply["signup_success"], reply_markup=kb.adm_menu_markup if newplayer.is_adm else kb.user_menu_markup)
+    
+    newuser: player.Player = player.Player(update.message.chat_id, name, update.message.chat_id in adms)
+    db.add_player(connect, cursor, newuser)
+    update.message.reply_text(reply["signup_success"], reply_markup=kb.get_perm_kb(newuser))
     return ConversationHandler.END
 
 
@@ -117,10 +119,11 @@ def cr_game(update: Update, context: CallbackContext) -> int:
     :param ``context``: This is a context object passed to the callback called by ``telegram.ext.Handler`` or by the ``telegram.ext.Dispatcher``.
     :return: int
     """
-    if not db.player_is_registered(connect, cursor, update.message.chat_id):
+    user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
+    if user.id == 0:
         update.message.reply_text(reply["error_not_registered"], reply_markup=kb.start_markup)
         return ConversationHandler.END
-    elif db.is_adm(cursor, update.message.chat_id):
+    elif user.is_adm:
         update.message.reply_text(reply["adm_ask_date"], reply_markup=kb.cancel_markup)
         return ASKED_DATE
     else:
@@ -136,13 +139,17 @@ def cr_get_date(update: Update, context: CallbackContext) -> int:
     :param ``context``: This is a context object passed to the callback called by ``telegram.ext.Handler`` or by the ``telegram.ext.Dispatcher``.
     :return: int
     """
-    date = update.message.text
+    date: str = update.message.text
+    newgame: game.Game = game.Game()
+    
     try:
         datetime.strptime(date, "%d.%m.%Y")
     except ValueError:
         update.message.reply_text(reply["error_wrong_data_format"], reply_markup=kb.cancel_markup)
         return ASKED_DATE
-    context.chat_data["date"] = date
+    
+    newgame.date = date
+    context.chat_data["newgame"] = newgame
     update.message.reply_text(reply["adm_ask_place"], reply_markup=kb.cancel_markup)
     return ASKED_PLACE
 
@@ -155,8 +162,9 @@ def cr_get_place(update: Update, context: CallbackContext) -> int:
     :param ``context``: This is a context object passed to the callback called by ``telegram.ext.Handler`` or by the ``telegram.ext.Dispatcher``.
     :return: int
     """
-    place = update.message.text
-    context.chat_data["place"] = place
+    place: str = update.message.text
+    
+    context.chat_data["newgame"].place = place
     update.message.reply_text(reply["adm_ask_players_num"], reply_markup=kb.cancel_markup)
     return ASKED_PLAYERS
 
@@ -169,9 +177,10 @@ def cr_get_players_num(update: Update, context: CallbackContext) -> int:
     :param ``context``: This is a context object passed to the callback called by ``telegram.ext.Handler`` or by the ``telegram.ext.Dispatcher``.
     :return: int
     """
-    num = update.message.text
+    num: str = update.message.text
+    
     if num.isdigit() and int(num) > 0:
-        context.chat_data["players_num"] = num
+        context.chat_data["newgame"].max_players = num
         update.message.reply_text(reply["adm_ask_description"], reply_markup=kb.cancel_markup)
         return ASKED_DESCRIPTION
     else:
@@ -187,12 +196,10 @@ def cr_get_description(update: Update, context: CallbackContext) -> int:
     :param ``context``: This is a context object passed to the callback called by ``telegram.ext.Handler`` or by the ``telegram.ext.Dispatcher``.
     :return: int
     """
-    description = update.message.text
-    context.chat_data["description"] = description
-    reply_text = context.chat_data["date"] + "\n" + context.chat_data["place"] + "\n" + context.chat_data["players_num"]
-    if description != "":
-        reply_text += "\n" + description
-    update.message.reply_text(reply_text)
+    description: str = update.message.text
+    
+    context.chat_data["newgame"].description = description
+    update.message.reply_text(context.chat_data["newgame"].to_telegram_reply())
     update.message.reply_text(reply["adm_ask_to_check"], reply_markup=kb.yes_no_markup)
     return ASKED_TO_CHECK
 
@@ -205,13 +212,13 @@ def cr_finish(update: Update, context: CallbackContext) -> int:
     :param ``context``: This is a context object passed to the callback called by ``telegram.ext.Handler`` or by the ``telegram.ext.Dispatcher``.
     :return: int
     """
-    answer = update.message.text
+    answer: str = update.message.text
+    newgame: game.Game = context.chat_data["newgame"]
+    user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
+    
     if answer.upper() == "YES":
-        global connect
-        global cursor
-        newgame = game.Game(context.chat_data["date"], context.chat_data["place"], 0, context.chat_data["players_num"], context.chat_data["description"])
         db.add_game(connect, cursor, newgame)
-        update.message.reply_text(reply["adm_game_created"], reply_markup=kb.adm_menu_markup)
+        update.message.reply_text(reply["adm_game_created"], reply_markup=kb.get_perm_kb(user))
         return ConversationHandler.END
     elif answer.upper() == "NO":
         update.message.reply_text(reply["adm_ask_date"], reply_markup=kb.cancel_markup)
