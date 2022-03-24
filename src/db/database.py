@@ -152,3 +152,17 @@ def get_registrations(db_cursor: sqlite3.Cursor) -> [registration.Registration]:
     for registration_info in db_cursor.execute("""SELECT * FROM registrations""").fetchall():
         registrations.append(registration.Registration(*registration_info))
     return registrations
+
+def is_adm(db_cursor: sqlite3.Cursor, user_id: int) -> bool:
+    """
+    Return whether the user is an admin.
+
+    :param db_cursor: database object to interact with database
+    :param user_id: user id
+    :return: True if the user is an admin, False otherwise
+    """
+    db_cursor.execute('''SELECT is_adm FROM players WHERE id = %d''' % user_id)
+    if db_cursor.fetchone()[0] == 1:
+        return True
+    else:
+        return False

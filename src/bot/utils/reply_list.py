@@ -1,3 +1,4 @@
+# noqa D100
 reply_list = dict()
 
 reply_list['help'] = '#TODO'
@@ -7,7 +8,7 @@ reply_list['yes_permission'] = 'Thanks! We promise to keep your personal data an
 reply_list['no_permission'] = 'Thanks! We respect your personal data and will not store it, but you will have to write your full name each time you register for the game.'
 reply_list['ask_name'] = 'Enter full name:'
 reply_list['signup_success'] = 'You have successfully sign up.'
-reply_list['cancel'] = 'Cancel'
+reply_list['cancel'] = 'Cancel.'
 reply_list['no_access'] = 'You do not have permission to execute this command.'
 
 reply_list['adm_ask_date'] = 'On what date do you want to open the registration for the game? (DD.MM.YYYY)'
