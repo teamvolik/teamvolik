@@ -1,4 +1,4 @@
-"""A module that implements the visual part of the bot using ReplyKeyboardMarkup."""
+"""A module that implements the visual part of the bot by using ReplyKeyboardMarkup."""
 import sqlite3
 from telegram import ReplyKeyboardMarkup
 

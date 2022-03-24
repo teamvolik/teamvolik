@@ -1,4 +1,5 @@
-# noqa D100
+"""A module that contains a dictionary of bot responses."""
+
 reply_list = dict()
 
 reply_list['help'] = '#TODO'
