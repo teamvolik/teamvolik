@@ -53,7 +53,7 @@ class Player:
         self.attacking = attacking
         self.rating = rating
 
-    def to_sqlite_table(self) -> (int, str, bool, int, float, float, float, float, float, float): #type: ignore
+    def to_sqlite_table(self) -> (int, str, bool, int, float, float, float, float, float, float):  # type: ignore
         """
         Get data from Player object to put it in table.
 
