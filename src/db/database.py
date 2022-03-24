@@ -30,10 +30,11 @@ def connect(db_name: str = DATABASE_NAME) -> (sqlite3.Connection, sqlite3.Cursor
     return connection, db_cursor
 
 
-def create_tables(db_cursor: sqlite3.Cursor) -> None:
+def create_tables(connection: sqlite3.Connection, db_cursor: sqlite3.Cursor) -> None:
     """
     Create all tables that are needed for the project.
 
+    :param connection: database object to save changes
     :param db_cursor: cursor to interact with database
     """
     db_cursor.execute(
@@ -74,6 +75,7 @@ def create_tables(db_cursor: sqlite3.Cursor) -> None:
         );
     """
     )
+    connection.commit()
 
 
 # =========================================================PLAYERS======================================================

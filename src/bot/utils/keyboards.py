@@ -1,9 +1,6 @@
 """A module that implements the visual part of the bot by using ReplyKeyboardMarkup."""
-from platform import platform
 import sqlite3
 from telegram import ReplyKeyboardMarkup
-
-from teamvolik.teamvolik.src.classes.player import Player
 
 """ВРЕМЕННАЯ МЕРА ПОКА НЕ ПРОПИШЕМ ПУТИ ЧЕРЕЗ setup.py"""
 import os
@@ -32,13 +29,13 @@ def get_perm_kb(user: player.Player) -> ReplyKeyboardMarkup:
     """
     Get the user's or administrator's keyboard, depending on the user's permissions.
 
-    :param user: user id
+    :param user: user
     :return: ReplyKeyboardMarkup
     """
     return adm_menu_markup if user.is_adm else user_menu_markup
 
 
-def get_game_kb(games: [game.Game]) -> list:  # type: ignore
+def get_game_kb(games: list[game.Game]) -> list:  # type: ignore
     """
     Get a template for games keyboard.
 
@@ -47,7 +44,7 @@ def get_game_kb(games: [game.Game]) -> list:  # type: ignore
     """
     games_kb = []
     for one_game in games:
-        record = "[" + one_game[0] + "] " + one_game[1] + " - " + one_game[2] + " (" + one_game[3] + ") - " + one_game[4] + " players"
+        record = "[" + str(one_game.id) + "] " + str(one_game.date) + " - " + one_game.place + " (" + one_game.description + ") - " + str(one_game.max_players) + " players"
         games_kb.append([record])
     return games_kb
 

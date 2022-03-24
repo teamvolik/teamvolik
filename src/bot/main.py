@@ -1,3 +1,4 @@
+#%%
 """The main module containing the main functionality of the bot."""
 import json
 import logging
@@ -27,7 +28,7 @@ adms = []
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+#logger.setLevel(logging.DEBUG)
 
 
 def get_help(update: Update, context: CallbackContext) -> None:
@@ -64,7 +65,7 @@ def start(update: Update, context: CallbackContext) -> int:
     :return: ConversationHandler.END
     """
     user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
-    if user.id:
+    if user.id >= 0:
         update.message.reply_text(reply["error_already_exists"], reply_markup=kb.get_perm_kb(user))
         return ConversationHandler.END
     else:
@@ -120,7 +121,7 @@ def cr_game(update: Update, context: CallbackContext) -> int:
     :return: int
     """
     user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
-    if user.id == 0:
+    if user.id < 0:
         update.message.reply_text(reply["error_not_registered"], reply_markup=kb.start_markup)
         return ConversationHandler.END
     elif user.is_adm:
@@ -140,15 +141,14 @@ def cr_get_date(update: Update, context: CallbackContext) -> int:
     :return: int
     """
     date: str = update.message.text
-    newgame: game.Game = game.Game()
+    newgame: game.Game = game.Game(date=date)
     
-    try:
-        datetime.strptime(date, "%d.%m.%Y")
-    except ValueError:
-        update.message.reply_text(reply["error_wrong_data_format"], reply_markup=kb.cancel_markup)
-        return ASKED_DATE
+    # try:
+    #     datetime.strptime(date, "%d.%m.%Y")
+    # except ValueError:
+    #     update.message.reply_text(reply["error_wrong_data_format"], reply_markup=kb.cancel_markup)
+    #     return ASKED_DATE
     
-    newgame.date = date
     context.chat_data["newgame"] = newgame
     update.message.reply_text(reply["adm_ask_place"], reply_markup=kb.cancel_markup)
     return ASKED_PLACE
@@ -180,7 +180,7 @@ def cr_get_players_num(update: Update, context: CallbackContext) -> int:
     num: str = update.message.text
     
     if num.isdigit() and int(num) > 0:
-        context.chat_data["newgame"].max_players = num
+        context.chat_data["newgame"].max_players = int(num)
         update.message.reply_text(reply["adm_ask_description"], reply_markup=kb.cancel_markup)
         return ASKED_DESCRIPTION
     else:
@@ -238,13 +238,17 @@ def reg_game(update: Update, context: CallbackContext) -> int:
     :param ``context``: This is a context object passed to the callback called by ``telegram.ext.Handler`` or by the ``telegram.ext.Dispatcher``.
     :return: int
     """
-    if not db.player_is_registered(cursor, update.message.chat_id):
+    user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
+    games: list[game.Game] = db.get_future_games(cursor)
+    
+    if user.id < 0:
         update.message.reply_text(reply["error_not_registered"], reply_markup=kb.start_markup)
         return ConversationHandler.END
-    games = db.games_find_game(cursor, update.message.chat_id)
+
     if len(games) == 0:
-        update.message.reply_text(reply["no_games_yet"], reply_markup=kb.get_perm_kb(cursor, update.message.chat_id))
+        update.message.reply_text(reply["no_games_yet"], reply_markup=kb.get_perm_kb(user))
         return ConversationHandler.END
+    
     games_kb = kb.get_game_kb(games)
     context.chat_data["game_list"] = games_kb
     update.message.reply_text(reply["reg_ask_game"], reply_markup=kb.get_game_markup(games_kb))
@@ -259,22 +263,26 @@ def reg_accept(update: Update, context: CallbackContext) -> int:  # TODO пер�
     :param ``context``: This is a context object passed to the callback called by ``telegram.ext.Handler`` or by the ``telegram.ext.Dispatcher``.
     :return: int
     """
-    reply = update.message.text
-    games_list = context.chat_data["game_list"]
-    if [reply] not in games_list:
+    answer: str = update.message.text
+    games_list: list[str] = context.chat_data["game_list"]
+    user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
+    chosen_game: game.Game
+    
+    if [answer] not in games_list:
         update.message.reply_text(reply["error_wrong_game_chosen"], reply_markup=kb.get_game_markup(games_list))
         return ASKED_GAME
-    game_id = int(reply.split("]")[0][1:])  # ???
-    player_id = update.message.chat_id  # ???
-    max_players = int(reply.split(") - ")[1].split()[0])  # ???
-    if len(db.games_get_player_ids(cursor, game_id)) >= max_players:
-        context.chat_data["game_id"] = game_id
+    
+    game_id = int(answer.split("]")[0][1:])
+    chosen_game = db.get_game_by_id(cursor, game_id)
+
+    if len(db.get_players_by_game_id(cursor, chosen_game.id)) >= chosen_game.max_players:
+        context.chat_data["chosen_game"] = chosen_game
         update.message.reply_text(reply["reg_ask_reserve"], reply_markup=kb.yes_no_markup)
         return ASKED_ABOUT_RESERVE
     else:
-        newreg = registration.Registration(player_id, game_id, False)  # TODO допилить оплачиваемые игры, в т.ч. прикрутить платежку
+        newreg = registration.Registration(user.id, chosen_game.id)  # TODO допилить оплачиваемые игры, в т.ч. прикрутить платежку
         db.add_registration(connect, cursor, newreg)
-        update.message.reply_text(reply["reg_success"], reply_markup=kb.get_perm_kb(cursor, player_id))
+        update.message.reply_text(reply["reg_success"], reply_markup=kb.get_perm_kb(user))
     return ConversationHandler.END
 
 
@@ -286,15 +294,18 @@ def reg_added_to_reserve(update: Update, context: CallbackContext) -> int:
     :param ``context``: This is a context object passed to the callback called by ``telegram.ext.Handler`` or by the ``telegram.ext.Dispatcher``.
     :return: int
     """
-    reply = update.message.text
-    newreg = registration.Registration(update.message.chat_id, context.chat_data["game_id"], False, True)  # TODO
-    if reply.upper() == "YES":
+    answer: str = update.message.text
+    user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
+    chosen_game: game.Game = context.chat_data["chosen_game"]
+    newreg: registration.Registration = registration.Registration(user.id, chosen_game.id, is_reserve = True)  # TODO
+    
+    if answer.upper() == "YES":
         db.add_registration(connect, cursor, newreg)
-        reserved_slots = db.reserve_slots(cursor, newreg.game_id)
-        update.message.reply_text(reply["reg_success"] + "\n" + "Your position in the queue:" + str(reserved_slots), reply_markup=kb.get_perm_kb(cursor, update.message.chat_id))
+        reserved_slots: int = len(filter(lambda x: x.is_reserve, db.get_registrations_by_game_id(cursor, chosen_game.id)))
+        update.message.reply_text(reply["reg_success"] + "\n" + "Your position in the queue:" + str(reserved_slots), reply_markup=kb.get_perm_kb(user))
         return ConversationHandler.END
-    elif reply.upper() == "NO":
-        update.message.reply_text(reply["reg_canceled"], reply_markup=kb.get_perm_kb(cursor, newreg.user_id))
+    elif answer.upper() == "NO":
+        update.message.reply_text(reply["reg_canceled"], reply_markup=kb.get_perm_kb(user))
         return ConversationHandler.END
     else:
         update.message.reply_text(reply["error_sayitagain"], reply_markup=kb.yes_no_markup)
@@ -310,12 +321,15 @@ def games_show_available_list(update: Update, context: CallbackContext) -> int:
     :param ``context``: This is a context object passed to the callback called by ``telegram.ext.Handler`` or by the ``telegram.ext.Dispatcher``.
     :return: int
     """
-    if not db.player_is_registered(cursor, update.message.chat_id):
+    user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
+    games: list[game.Game] = db.get_future_games(cursor)
+    
+    if user.id < 0:
         update.message.reply_text(reply["error_not_registered"], reply_markup=kb.start_markup)
         return ConversationHandler.END
-    games = db.games_show_list(connect, cursor)
+
     if len(games) == 0:
-        update.message.reply_text(reply["no_games_yet"], reply_markup=kb.get_perm_kb(cursor, update.message.chat_id))
+        update.message.reply_text(reply["no_games_yet"], reply_markup=kb.get_perm_kb(user))
         return ConversationHandler.END
     games_kb = kb.get_game_kb(games)
     context.chat_data["game_list"] = games_kb
@@ -331,34 +345,40 @@ def games_show_players(update: Update, context: CallbackContext) -> int:
     :param ``context``: This is a context object passed to the callback called by ``telegram.ext.Handler`` or by the ``telegram.ext.Dispatcher``.
     :return: int
     """
-    reply = update.message.text
-    games_list = context.chat_data["game_list"]
-    if [reply] not in games_list:
-        update.message.reply_text(reply["error_wrong_game_chosen"], reply_markup=kb.get_game_markup(games_list))
+    user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
+    answer: str = update.message.text
+    games_kb: list[str] = context.chat_data["game_list"]
+    chosen_game: game.Game
+    
+    if [answer] not in games_kb:
+        update.message.reply_text(reply["error_wrong_game_chosen"], reply_markup=kb.get_game_markup(games_kb))
         return ASKED_PLAYERS_LIST
-    game_id = int(reply.split("]")[0][1:])  # ???????????
-    player_ids = db.games_get_player_ids(cursor, game_id)
-    if len(player_ids) == 0:
-        if db.is_adm(cursor, update.message.chat_id):
-            update.message.reply_text(reply["no_players_yet"], reply_markup=kb.adm_menu_markup)
-        else:
-            update.message.reply_text(reply["no_players_yet"], reply_markup=kb.user_menu_markup)
+    
+    game_id = int(answer.split("]")[0][1:])
+    chosen_game = db.get_game_by_id(cursor, game_id)
+    players_in_chosen_game: list[registration.Registration] = db.get_registrations_by_game_id(cursor, chosen_game.id)
+    
+    if len(players_in_chosen_game) == 0:
+        update.message.reply_text(reply["no_players_yet"], reply_markup=kb.get_perm_kb(user))
         return ConversationHandler.END
-    players = db.players_from_ids(cursor, player_ids)
-    players_msg = reply["games_player_list"]
+    
+    players_msg: str = ""
+    players_msg_reserve: str = ""   #TODO НОРМ ОБРАБОТКУ ОЧЕРЕДЕЙ РЕЗЕРВАЦИИ
     counter = 0
     reserve_counter = 0
-    for one_player in players:
-        if one_player[1] == 0:
-            counter += 1
-            players_msg += "\n" + str(counter) + ". " + one_player[0]
-        if one_player[1] == 1:
+    for one_player in players_in_chosen_game:
+        if one_player.is_reserve:
             reserve_counter += 1
-            players_msg += "\n" + "Р" + str(reserve_counter) + ". " + one_player[0]
-    if db.is_adm(connect, cursor, update.message.chat_id):
-        update.message.reply_text(players_msg, reply_markup=kb.adm_menu_markup)
-    else:
-        update.message.reply_text(players_msg, reply_markup=kb.user_menu_markup)
+            players_msg_reserve += "\n" + str(reserve_counter) + ". " + db.get_player_by_id(cursor, one_player.user_id).name
+        else:
+            counter += 1
+            players_msg += "\n" + str(counter) + ". " + db.get_player_by_id(cursor, one_player.user_id).name
+            
+    res_reply = reply["games_player_list"] + players_msg
+    if players_msg_reserve != "":
+        res_reply += "\n" + reply["games_reserve_list"] + players_msg_reserve
+    
+    update.message.reply_text(res_reply, reply_markup=kb.get_perm_kb(user))
     return ConversationHandler.END
 
 
@@ -371,14 +391,17 @@ def leave_game(update: Update, context: CallbackContext) -> int:
     :param ``context``: This is a context object passed to the callback called by ``telegram.ext.Handler`` or by the ``telegram.ext.Dispatcher``.
     :return: int
     """
-    if not db.player_is_registered(connect, cursor, update.message.chat_id):
+    user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
+    user_games: list[game.Game] = db.get_games_by_player_id(cursor, user.id)
+    
+    if user.id < 0:
         update.message.reply_text(reply["error_not_registered"], reply_markup=kb.start_markup)
         return ConversationHandler.END
-    games = db.player_games(cursor, update.message.chat_id)
-    if len(games) == 0:
-        update.message.reply_text(reply["no_games_yet"], reply_markup=kb.get_perm_kb(cursor, update.message.chat_id))
+    
+    if len(user_games) == 0:
+        update.message.reply_text(reply["no_games_yet"], reply_markup=kb.get_perm_kb(user))
         return ConversationHandler.END
-    games_kb = kb.get_game_kb(games)
+    games_kb: list[str] = kb.get_game_kb(user_games)
     context.chat_data["game_list"] = games_kb
     update.message.reply_text(reply["choose_game_to_leave"], reply_markup=kb.get_game_markup(games_kb))
     return ASKED_GAME_TO_LEAVE
@@ -392,17 +415,21 @@ def leave_success(update: Update, context: CallbackContext) -> int:
     :param ``context``: This is a context object passed to the callback called by ``telegram.ext.Handler`` or by the ``telegram.ext.Dispatcher``.
     :return: int
     """
-    reply = update.message.text
-    games_list = context.chat_data["game_list"]
-    if [reply] not in games_list:
-        update.message.reply_text(reply["error_wrong_game_chosen"], reply_markup=kb.get_game_markup(games_list))
+    user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
+    answer: str = update.message.text
+    games_kb: list[str] = context.chat_data["game_list"]
+    chosen_games: game.Game
+    
+    if [answer] not in games_kb:
+        update.message.reply_text(reply["error_wrong_game_chosen"], reply_markup=kb.get_game_markup(games_kb))
         return ASKED_PLAYERS_LIST
-    game_id = int(reply.split("]")[0][1:])  # ????
-    db.remove_registration(connect, cursor, update.message.chat_id, game_id)
-    update.message.reply_text(reply["left_game"], reply_markup=kb.get_perm_kb(cursor, update.message.chat_id))
-    #    new_player_id = db.games_get_reserve(connect, cursor, game_id)
-    #    context.bot.send_message(db.games_get_reserve(connect, cursor, new_player_id),
-    #                             reply['reg_from_reserve_to_active'])
+    
+    game_id: int = int(answer.split("]")[0][1:])
+    chosen_games = db.get_game_by_id(cursor, game_id)
+    
+    db.remove_registration(connect, cursor, user.id, chosen_games.id)
+    update.message.reply_text(reply["left_game"], reply_markup=kb.get_perm_kb(user))
+    #TODO допилить резервацию
     return ConversationHandler.END
 
 
@@ -439,13 +466,13 @@ def main() -> None:
     connect = sqlite3.connect(config["db_fname"], check_same_thread=False)
     global cursor
     cursor = connect.cursor()
-    db.create_tables(cursor)
+    db.create_tables(connect, cursor)
 
     base_filter = Filters.text & ~Filters.regex(r"Cancel")
 
     conv_handler = ConversationHandler(
         entry_points=[
-            MessageHandler(Filters.regex(r"Create game"), cr_game),
+            MessageHandler(Filters.regex(r"Create a game"), cr_game),
             CommandHandler("start", start),
             MessageHandler(Filters.regex(r"Sign up for a game"), reg_game),
             MessageHandler(Filters.regex(r"List of games"), games_show_available_list),
