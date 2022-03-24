@@ -1,14 +1,21 @@
 """Module that implements all the interactions with database."""
 import sqlite3
 
+"""ВРЕМЕННАЯ МЕРА ПОКА НЕ ПРОПИШЕМ ПУТИ ЧЕРЕЗ setup.py"""
+import os
+import sys
+sys.path.append(os.getcwd() + "/../../")
+""""""
+
 import src.classes.game as game
 import src.classes.player as player
 import src.classes.registration as registration
 
+
 DATABASE_NAME: str = "database.sqlite"
 
 
-def connect(db_name: str = DATABASE_NAME) -> (sqlite3.Connection, sqlite3.Cursor):
+def connect(db_name: str = DATABASE_NAME) -> (sqlite3.Connection, sqlite3.Cursor): #type: ignore
     """
     Get all necessary sqlite objects.
 
@@ -108,40 +115,40 @@ def add_registration(connection: sqlite3.Connection, db_cursor: sqlite3.Cursor, 
     return registration
 
 
-def get_players(db_cursor: sqlite3.Cursor) -> [player.Player]:
+def get_players(db_cursor: sqlite3.Cursor) -> [player.Player]: #type: ignore
     """
     Get players from database.
 
     :param db_cursor: database object to interact with database
     :return: All players that are present in database
     """
-    players: [player.Player] = []
+    players: [player.Player] = [] #type: ignore
     for player_info in db_cursor.execute("""SELECT * FROM players""").fetchall():
         players.append(player.Player(*player_info))
     return players
 
 
-def get_games(db_cursor: sqlite3.Cursor) -> [game.Game]:
+def get_games(db_cursor: sqlite3.Cursor) -> [game.Game]: #type: ignore
     """
     Get games from database.
 
     :param db_cursor: database object to interact with database
     :return: All games that are present in database
     """
-    games: [game.Game] = []
+    games: [game.Game] = [] #type: ignore
     for game_info in db_cursor.execute("""SELECT * FROM games""").fetchall():
         games.append(game.Game(*game_info))
     return games
 
 
-def get_registrations(db_cursor: sqlite3.Cursor) -> [registration.Registration]:
+def get_registrations(db_cursor: sqlite3.Cursor) -> [registration.Registration]: #type: ignore
     """
     Get registrations from database.
 
     :param db_cursor: database object to interact with database
     :return: All registrations that are present in database
     """
-    registrations: [registration.Registration] = []
+    registrations: [registration.Registration] = [] #type: ignore
     for registration_info in db_cursor.execute("""SELECT * FROM registrations""").fetchall():
         registrations.append(registration.Registration(*registration_info))
     return registrations

@@ -31,7 +31,7 @@ class Registration:
         else:
             self.time = datetime.datetime.now(tz=pytz.timezone("Europe/Moscow"))
 
-    def to_sqlite_table(self) -> (int, int, bool, bool, float):
+    def to_sqlite_table(self) -> (int, int, bool, bool, float): #type: ignore
         """
         Get data from Registration object to put it in table.
 

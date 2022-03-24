@@ -30,7 +30,7 @@ class Game:
         self.max_players = max_players
         self.description = description
 
-    def to_sqlite_table(self) -> (float, str, int, str):
+    def to_sqlite_table(self) -> (float, str, int, str): #type: ignore
         """
         Get data from Game object to put it in table.
 
