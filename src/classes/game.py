@@ -37,3 +37,14 @@ class Game:
         :return: data that should be put into database
         """
         return self.date.timestamp(), self.place, self.max_players, self.description
+
+    def to_telegram_reply(self) -> str:
+        """
+        Get string for pretty output.
+
+        :return: the string to be output in the telegram response
+        """
+        if self.description != "":
+            return "\n".join([self.date, self.place, self.max_players, self.description])
+        else:
+            return "\n".join([self.date, self.place, self.max_players])

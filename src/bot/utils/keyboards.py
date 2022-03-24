@@ -51,7 +51,7 @@ def get_game_kb(games: [game.Game]) -> list: #type: ignore
     return games_kb
 
 
-def get_game_markup(games_kb: list) -> ReplyKeyboardMarkup:
+def get_game_markup(games_kb: [game.Game]) -> ReplyKeyboardMarkup: #type: ignore
     """
     Get a keyboard containing upcoming games.
     
