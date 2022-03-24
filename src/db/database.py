@@ -157,7 +157,7 @@ def get_registrations(db_cursor: sqlite3.Cursor) -> [registration.Registration]:
     return registrations
 
 
-def is_adm(db_cursor: sqlite3.Cursor, user_id: int) -> bool:
+def is_adm(db_cursor: sqlite3.Cursor, user_id: int) -> bool:   #TODO GET_PLAYER_BY_ID
     """
     Return whether the user is an admin.
 
@@ -169,7 +169,7 @@ def is_adm(db_cursor: sqlite3.Cursor, user_id: int) -> bool:
     return db_cursor.fetchone()[0] == 1
 
 
-def player_is_registered(db_cursor: sqlite3.Cursor, user_id: int) -> bool:
+def player_is_registered(db_cursor: sqlite3.Cursor, user_id: int) -> bool:   #TODO SQUASH WITH PREVIOS
     """
     Get True if the user is already registered.
 
@@ -181,7 +181,7 @@ def player_is_registered(db_cursor: sqlite3.Cursor, user_id: int) -> bool:
     return db_cursor.fetchone()[0] >= 1
 
 
-def games_find_game(db_cursor: sqlite3.Cursor, user_id: int) -> [game.Game]:  # type: ignore
+def games_find_game(db_cursor: sqlite3.Cursor, user_id: int) -> [game.Game]:  # type: ignore #!!!
     """
     Get a list of current games for which the player is registered.
 
@@ -225,7 +225,7 @@ def reserve_slots(db_cursor: sqlite3.Cursor, game_id: int) -> int:
     return db_cursor.fetchone()[0]
 
 
-def games_show_list(db_cursor: sqlite3.Cursor) -> [game.Game]:  # type: ignore
+def games_show_list(db_cursor: sqlite3.Cursor) -> [game.Game]:  # type: ignore #!!!
     """
     Get a list of available games.
 
@@ -241,7 +241,7 @@ def games_show_list(db_cursor: sqlite3.Cursor) -> [game.Game]:  # type: ignore
     return games
 
 
-def players_from_ids(db_cursor: sqlite3.Cursor, ids: list) -> [str]:  # type: ignore
+def players_from_ids(db_cursor: sqlite3.Cursor, ids: list) -> [str]:  # type: ignore #!!!
     """
     Get a list of players registered for a game.
 
@@ -257,7 +257,7 @@ def players_from_ids(db_cursor: sqlite3.Cursor, ids: list) -> [str]:  # type: ig
     return players
 
 
-def player_games(db_cursor: sqlite3.Cursor, user_id: int) -> [game.Game]:  # type: ignore
+def player_games(db_cursor: sqlite3.Cursor, user_id: int) -> [game.Game]:  # type: ignore #!!!
     """
     Get a list of games for which a player is registered.
 

@@ -12,7 +12,7 @@ from telegram.ext.filters import Filters
 import os  # noqa E402
 import sys
 
-sys.path.append(os.getcwd() + "/../../../")
+sys.path.append(os.getcwd() + "/../../")
 """"""
 
 from src.db import database as db
@@ -120,7 +120,7 @@ def cr_game(update: Update, context: CallbackContext) -> int:
     if not db.player_is_registered(connect, cursor, update.message.chat_id):
         update.message.reply_text(reply["error_not_registered"], reply_markup=kb.start_markup)
         return ConversationHandler.END
-    elif db.is_adm(connect, cursor, update.message.chat_id):
+    elif db.is_adm(cursor, update.message.chat_id):
         update.message.reply_text(reply["adm_ask_date"], reply_markup=kb.cancel_markup)
         return ASKED_DATE
     else:
@@ -421,7 +421,7 @@ def main() -> None:
 
     :return: None
     """
-    with open("config.json", "r") as f:
+    with open("../../config.json", "r") as f:
         config = json.loads(f.read())
     updater = Updater(config["token"])
     dispatcher = updater.dispatcher
@@ -432,7 +432,7 @@ def main() -> None:
     connect = sqlite3.connect(config["db_fname"], check_same_thread=False)
     global cursor
     cursor = connect.cursor()
-    db.create_dbs(connect, cursor)
+    db.create_tables(cursor)
 
     base_filter = Filters.text & ~Filters.regex(r"Cancel")
 
