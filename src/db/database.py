@@ -1,5 +1,14 @@
 """Module that implements all the interactions with database."""
 import sqlite3
+import pytz
+import datetime
+
+"""ВРЕМЕННАЯ МЕРА ПОКА НЕ ПРОПИШЕМ ПУТИ ЧЕРЕЗ setup.py"""
+import os
+import sys
+
+sys.path.append(os.getcwd() + "../../")
+""""""
 
 import src.classes.game as game
 import src.classes.player as player
@@ -66,82 +75,222 @@ def create_tables(db_cursor: sqlite3.Cursor) -> None:
     )
 
 
-def add_player(connection: sqlite3.Connection, db_cursor: sqlite3.Cursor, player: player.Player) -> player.Player:
+# =========================================================PLAYERS======================================================
+def add_player(connection: sqlite3.Connection, db_cursor: sqlite3.Cursor, new_player: player.Player) -> player.Player:
     """
     Add player to database.
 
     :param connection: database object to save changes
     :param db_cursor: database object to interact with database
-    :param player: player to add to database
+    :param new_player: player to add to database
     """
-    db_cursor.execute("""INSERT OR REPLACE INTO players VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", player.to_sqlite_table())
+    db_cursor.execute("""INSERT OR REPLACE INTO players VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", new_player.to_sqlite_table())
     connection.commit()
-    return player
+    return new_player
 
 
-def add_game(connection: sqlite3.Connection, db_cursor: sqlite3.Cursor, game: game.Game) -> game.Game:
-    """
-    Add game to database.
-
-    :param connection: database object to save changes
-    :param db_cursor: database object to interact with database
-    :param game: game to add to database
-    """
-    game_info = game.to_sqlite_table()
-    db_cursor.execute("""INSERT OR REPLACE INTO games VALUES (NULL, ?, ?, ?, ?)""", game_info)
-    db_cursor.execute("""SELECT id FROM games WHERE date = ? AND place = ? AND max_players = ? AND description = ?""", game_info)
-    game.id = db_cursor.fetchone()[0]
-    connection.commit()
-    return game
-
-
-def add_registration(connection: sqlite3.Connection, db_cursor: sqlite3.Cursor, registration: registration.Registration) -> registration.Registration:
-    """
-    Add registration to database.
-
-    :param connection: database object to save changes
-    :param db_cursor: database object to interact with database
-    :param registration: registration to add to database
-    """
-    db_cursor.execute("""REPLACE INTO registrations VALUES (?, ?, ?, ?, ?)""", registration.to_sqlite_table())
-    connection.commit()
-    return registration
-
-
-def get_players(db_cursor: sqlite3.Cursor) -> [player.Player]:
+def get_players(db_cursor: sqlite3.Cursor) -> [player.Player]:  # type: ignore
     """
     Get players from database.
 
     :param db_cursor: database object to interact with database
     :return: All players that are present in database
     """
-    players: [player.Player] = []
+    players: [player.Player] = []  # type: ignore
     for player_info in db_cursor.execute("""SELECT * FROM players""").fetchall():
-        players.append(player.Player(*player_info))
+        players.append(player.Player.from_sqlite_table(player_info))
     return players
 
 
-def get_games(db_cursor: sqlite3.Cursor) -> [game.Game]:
+def get_player_by_id(db_cursor: sqlite3.Cursor, id: int) -> player.Player:
+    """
+    Get player by id.
+
+    :param db_cursor: database object to interact with database
+    :param id: player id
+    :return: player object
+    """
+    db_cursor.execute("""SELECT * FROM players WHERE id = %d""" % id)
+    player_info = db_cursor.fetchone()
+    return player.Player.from_sqlite_table(player_info)
+
+
+def remove_player_by_id(connection: sqlite3.Connection, db_cursor: sqlite3.Cursor, id: int) -> None:
+    """
+    Remove player from database.
+
+    :param connection: database object to interact with database
+    :param db_cursor: database object to interact with database
+    :param id: id of a player that should be deleted
+    :return: None
+    """
+    db_cursor.execute("""DELETE FROM players WHERE id = ?""", [id])
+    connection.commit()
+
+
+# =========================================================GAMES========================================================
+def add_game(connection: sqlite3.Connection, db_cursor: sqlite3.Cursor, new_game: game.Game) -> game.Game:
+    """
+    Add game to database.
+
+    :param connection: database object to save changes
+    :param db_cursor: database object to interact with database
+    :param new_game: game to add to database
+    """
+    game_info = new_game.to_sqlite_table()
+    db_cursor.execute("""INSERT OR REPLACE INTO games VALUES (NULL, ?, ?, ?, ?)""", game_info)
+    db_cursor.execute("""SELECT id FROM games WHERE date = ? AND place = ? AND max_players = ? AND description = ?""", game_info)
+    new_game.id = db_cursor.fetchone()[0]
+    connection.commit()
+    return new_game
+
+
+def get_games(db_cursor: sqlite3.Cursor) -> [game.Game]:  # type: ignore
     """
     Get games from database.
 
     :param db_cursor: database object to interact with database
     :return: All games that are present in database
     """
-    games: [game.Game] = []
+    games: [game.Game] = []  # type: ignore
     for game_info in db_cursor.execute("""SELECT * FROM games""").fetchall():
-        games.append(game.Game(*game_info))
+        games.append(game.Game.from_sqlite_table(game_info))
     return games
 
 
-def get_registrations(db_cursor: sqlite3.Cursor) -> [registration.Registration]:
+def get_future_games(db_cursor: sqlite3.Cursor) -> [game.Game]:
+    """
+    Get games that will take place in the future.
+
+    :param db_cursor: database object to interact with database
+    :return: list of future games
+    """
+    db_cursor.execute("""SELECT * FROM games WHERE date >= %d""" % datetime.datetime.now(tz=pytz.timezone("Europe/Moscow")).timestamp())
+    game_infos = db_cursor.fetchall()
+    games = []
+    for game_info in game_infos:
+        games.append(game.Game.from_sqlite_table(game_info))
+    return games
+
+
+def get_game_by_id(db_cursor: sqlite3.Cursor, id: int) -> game.Game:  # type: ignore
+    """
+    Get game by game id from database.
+
+    :param db_cursor: database object to interact with database
+    :param id: game id
+    :return: a game
+    """
+    db_cursor.execute("""SELECT * FROM games WHERE id = ?""", [id])
+    game_info = db_cursor.fetchone()
+    return game.Game.from_sqlite_table(game_info)
+
+
+#   =======================================================REGISTRATIONS================================================
+def add_registration(connection: sqlite3.Connection, db_cursor: sqlite3.Cursor, new_registration: registration.Registration) -> registration.Registration:
+    """
+    Add registration to database.
+
+    :param connection: database object to save changes
+    :param db_cursor: database object to interact with database
+    :param new_registration: registration to add to database
+    """
+    db_cursor.execute("""REPLACE INTO registrations VALUES (?, ?, ?, ?, ?)""", new_registration.to_sqlite_table())
+    connection.commit()
+    return new_registration
+
+
+def get_registrations(db_cursor: sqlite3.Cursor) -> [registration.Registration]:  # type: ignore
     """
     Get registrations from database.
 
     :param db_cursor: database object to interact with database
     :return: All registrations that are present in database
     """
-    registrations: [registration.Registration] = []
+    registrations: [registration.Registration] = []  # type: ignore
     for registration_info in db_cursor.execute("""SELECT * FROM registrations""").fetchall():
-        registrations.append(registration.Registration(*registration_info))
+        registrations.append(registration.Registration.from_sqlite_table(registration_info))
     return registrations
+
+
+def get_registrations_by_game_id(db_cursor: sqlite3.Cursor, game_id: int) -> [registration.Registration]:
+    """
+    Get a list of registration by game id.
+
+    :param db_cursor: database object to interact with database
+    :param game_id: game id
+    :return: a list of registrations
+    """
+    db_cursor.execute("""SELECT * FROM registrations WHERE game_id = ?""", [game_id])
+    registration_infos = db_cursor.fetchall()
+    registrations = []
+    for registration_info in registration_infos:
+        registrations.append(registration.Registration.from_sqlite_table(registration_info))
+    return registrations
+
+
+def get_registrations_by_player_id(db_cursor: sqlite3.Cursor, player_id: int) -> [registration.Registration]:
+    """
+    Get a list of registrations by player id.
+
+    :param db_cursor: database object to interact with database
+    :param player_id: player id
+    :return: a list of registrations
+    """
+    db_cursor.execute("""SELECT * FROM registrations WHERE user_id = ?""", [player_id])
+    registration_infos = db_cursor.fetchall()
+    registrations = []
+    for registration_info in registration_infos:
+        registrations.append(registration.Registration.from_sqlite_table(registration_info))
+    return registrations
+
+
+def remove_registration(connection: sqlite3.Connection, db_cursor: sqlite3.Cursor, user_id, game_id) -> None:
+    """
+    Remove player from the game.
+
+    :param connection: database object to interact with database
+    :param db_cursor: database object to interact with database
+    :param user_id: user id
+    :param game_id: game id
+    :return: None
+    """
+    db_cursor.execute("""DELETE FROM registrations WHERE user_id = ? AND game_id = ?""", (user_id, game_id))
+    connection.commit()
+
+
+# ======================================================================================================================
+def get_games_by_player_id(db_cursor: sqlite3.Cursor, player_id: int) -> [game.Game]:
+    """
+    Get a list of current games for which the player is registered.
+
+    :param db_cursor: database object to interact with database
+    :param player_id: player id
+    :return: a list of player's games that haven't finished yet
+    """
+    db_cursor.execute("""SELECT game_id FROM registrations WHERE user_id = %d""" % player_id)
+    game_ids = [str(id[0]) for id in db_cursor.fetchall()]
+    db_cursor.execute("""SELECT * FROM games WHERE id IN (%s)""" % ", ".join(game_ids))
+    game_infos = db_cursor.fetchall()
+    games = []
+    for game_info in game_infos:
+        games.append(game.Game.from_sqlite_table(game_info))
+    return games
+
+
+def get_players_by_game_id(db_cursor: sqlite3.Cursor, game_id: int) -> [player.Player]:
+    """
+    Get a list of players that are signed up for a game.
+
+    :param db_cursor: database object to interact with database
+    :param game_id: game id
+    :return: a list of players that are signed up for a game
+    """
+    db_cursor.execute("""SELECT user_id FROM registrations WHERE game_id = ?""", [game_id])
+    player_ids = [str(id[0]) for id in db_cursor.fetchall()]
+    db_cursor.execute("""SELECT * FROM players WHERE id IN (%s)""" % ", ".join(player_ids))
+    player_infos = db_cursor.fetchall()
+    players = []
+    for player_info in player_infos:
+        players.append(player.Player.from_sqlite_table(player_info))
+    return players
