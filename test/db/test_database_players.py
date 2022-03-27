@@ -11,7 +11,7 @@ class DatabasePlayersTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.connection, self.db_cursor = database.connect(":memory:")
-        database.create_tables(self.db_cursor)
+        database.create_tables(self.connection, self.db_cursor)
         self.johndoe = player.Player(1, "John Doe", True)
         database.add_player(self.connection, self.db_cursor, self.johndoe)
 
