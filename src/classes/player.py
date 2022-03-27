@@ -17,9 +17,9 @@ class Player:
 
     def __init__(
         self,
-        id: int,
-        name: str,
-        is_adm: bool,
+        id: int = -1,
+        name: str = "UNDEFINED",
+        is_adm: bool = 0,
         games: int = 0,
         pitch: float = 0.0,
         hold: float = 0.0,
@@ -53,7 +53,41 @@ class Player:
         self.attacking = attacking
         self.rating = rating
 
-    def to_sqlite_table(self) -> (int, str, bool, int, float, float, float, float, float, float):
+    def __str__(self) -> str:
+        """
+        Get string representation of Player object for debugging.
+
+        :return: string of Player object
+        """
+        return (
+            f"Player("
+            f"id={self.id}, "
+            f"name={self.name}, "
+            f"is_adm={self.is_adm}, "
+            f"games={self.games}, "
+            f"pitch={self.pitch}, "
+            f"hold={self.hold}, "
+            f"passing={self.passing}, "
+            f"movement={self.movement}, "
+            f"attacking={self.attacking}, "
+            f"rating={self.rating}"
+            f")"
+        )
+
+    @staticmethod
+    def from_sqlite_table(player_info: tuple) -> "Player":
+        """
+        Get Player object from database record.
+
+        :param player_info: database record.
+        :return: Player object
+        """
+        if player_info is None:
+            return Player()
+        else:
+            return Player(*player_info)
+
+    def to_sqlite_table(self) -> (int, str, bool, int, float, float, float, float, float, float):  # type: ignore
         """
         Get data from Player object to put it in table.
 
