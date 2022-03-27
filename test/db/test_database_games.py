@@ -12,7 +12,7 @@ class DatabaseGamesTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.connection, self.db_cursor = database.connect(":memory:")
-        database.create_tables(self.db_cursor)
+        database.create_tables(self.connection, self.db_cursor)
 
     def tearDown(self) -> None:
         self.connection.close()

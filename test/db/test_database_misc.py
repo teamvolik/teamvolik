@@ -13,7 +13,7 @@ class DatabaseTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.connection, self.db_cursor = database.connect(":memory:")
-        database.create_tables(self.db_cursor)
+        database.create_tables(self.connection, self.db_cursor)
 
     def tearDown(self) -> None:
         self.connection.close()
@@ -33,7 +33,7 @@ class DatabaseTest(unittest.TestCase):
             self.fail(error)
 
     def test_no_creation_if_exists(self):
-        database.create_tables(self.db_cursor)
+        database.create_tables(self.connection, self.db_cursor)
 
     def test_get_players_by_game_id(self):
         new_players = [
