@@ -1,9 +1,7 @@
-#%%
 """The main module containing the main functionality of the bot."""
 import json
 import logging
 import sqlite3
-from datetime import datetime
 
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext, ConversationHandler
@@ -28,7 +26,7 @@ adms = []
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
-#logger.setLevel(logging.DEBUG)
+# logger.setLevel(logging.DEBUG)
 
 
 def get_help(update: Update, context: CallbackContext) -> None:
@@ -104,7 +102,7 @@ def signup_success(update: Update, context: CallbackContext) -> int:
     if len(name.split()) != len("Full Name".split()):
         update.message.reply_text(reply["error_wrong_name_format"])
         return RECORD_NAME
-    
+
     newuser: player.Player = player.Player(update.message.chat_id, name, update.message.chat_id in adms)
     db.add_player(connect, cursor, newuser)
     update.message.reply_text(reply["signup_success"], reply_markup=kb.get_perm_kb(newuser))
@@ -142,13 +140,13 @@ def cr_get_date(update: Update, context: CallbackContext) -> int:
     """
     date: str = update.message.text
     newgame: game.Game = game.Game(date=date)
-    
+
     # try:
     #     datetime.strptime(date, "%d.%m.%Y")
     # except ValueError:
     #     update.message.reply_text(reply["error_wrong_data_format"], reply_markup=kb.cancel_markup)
     #     return ASKED_DATE
-    
+
     context.chat_data["newgame"] = newgame
     update.message.reply_text(reply["adm_ask_place"], reply_markup=kb.cancel_markup)
     return ASKED_PLACE
@@ -163,7 +161,7 @@ def cr_get_place(update: Update, context: CallbackContext) -> int:
     :return: int
     """
     place: str = update.message.text
-    
+
     context.chat_data["newgame"].place = place
     update.message.reply_text(reply["adm_ask_players_num"], reply_markup=kb.cancel_markup)
     return ASKED_PLAYERS
@@ -178,7 +176,7 @@ def cr_get_players_num(update: Update, context: CallbackContext) -> int:
     :return: int
     """
     num: str = update.message.text
-    
+
     if num.isdigit() and int(num) > 0:
         context.chat_data["newgame"].max_players = int(num)
         update.message.reply_text(reply["adm_ask_description"], reply_markup=kb.cancel_markup)
@@ -197,7 +195,7 @@ def cr_get_description(update: Update, context: CallbackContext) -> int:
     :return: int
     """
     description: str = update.message.text
-    
+
     context.chat_data["newgame"].description = description
     update.message.reply_text(context.chat_data["newgame"].to_telegram_reply())
     update.message.reply_text(reply["adm_ask_to_check"], reply_markup=kb.yes_no_markup)
@@ -215,7 +213,7 @@ def cr_finish(update: Update, context: CallbackContext) -> int:
     answer: str = update.message.text
     newgame: game.Game = context.chat_data["newgame"]
     user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
-    
+
     if answer.upper() == "YES":
         db.add_game(connect, cursor, newgame)
         update.message.reply_text(reply["adm_game_created"], reply_markup=kb.get_perm_kb(user))
@@ -240,7 +238,7 @@ def reg_game(update: Update, context: CallbackContext) -> int:
     """
     user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
     games: list[game.Game] = db.get_future_games(cursor)
-    
+
     if user.id < 0:
         update.message.reply_text(reply["error_not_registered"], reply_markup=kb.start_markup)
         return ConversationHandler.END
@@ -248,7 +246,7 @@ def reg_game(update: Update, context: CallbackContext) -> int:
     if len(games) == 0:
         update.message.reply_text(reply["no_games_yet"], reply_markup=kb.get_perm_kb(user))
         return ConversationHandler.END
-    
+
     games_kb = kb.get_game_kb(games)
     context.chat_data["game_list"] = games_kb
     update.message.reply_text(reply["reg_ask_game"], reply_markup=kb.get_game_markup(games_kb))
@@ -267,11 +265,11 @@ def reg_accept(update: Update, context: CallbackContext) -> int:  # TODO пер�
     games_list: list[str] = context.chat_data["game_list"]
     user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
     chosen_game: game.Game
-    
+
     if [answer] not in games_list:
         update.message.reply_text(reply["error_wrong_game_chosen"], reply_markup=kb.get_game_markup(games_list))
         return ASKED_GAME
-    
+
     game_id = int(answer.split("]")[0][1:])
     chosen_game = db.get_game_by_id(cursor, game_id)
 
@@ -297,8 +295,8 @@ def reg_added_to_reserve(update: Update, context: CallbackContext) -> int:
     answer: str = update.message.text
     user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
     chosen_game: game.Game = context.chat_data["chosen_game"]
-    newreg: registration.Registration = registration.Registration(user.id, chosen_game.id, is_reserve = True)  # TODO
-    
+    newreg: registration.Registration = registration.Registration(user.id, chosen_game.id, is_reserve=True)  # TODO
+
     if answer.upper() == "YES":
         db.add_registration(connect, cursor, newreg)
         reserved_slots: int = len(list(filter(lambda x: x.is_reserve, db.get_registrations_by_game_id(cursor, chosen_game.id))))
@@ -323,7 +321,7 @@ def games_show_available_list(update: Update, context: CallbackContext) -> int:
     """
     user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
     games: list[game.Game] = db.get_future_games(cursor)
-    
+
     if user.id < 0:
         update.message.reply_text(reply["error_not_registered"], reply_markup=kb.start_markup)
         return ConversationHandler.END
@@ -349,21 +347,21 @@ def games_show_players(update: Update, context: CallbackContext) -> int:
     answer: str = update.message.text
     games_kb: list[str] = context.chat_data["game_list"]
     chosen_game: game.Game
-    
+
     if [answer] not in games_kb:
         update.message.reply_text(reply["error_wrong_game_chosen"], reply_markup=kb.get_game_markup(games_kb))
         return ASKED_PLAYERS_LIST
-    
+
     game_id = int(answer.split("]")[0][1:])
     chosen_game = db.get_game_by_id(cursor, game_id)
     players_in_chosen_game: list[registration.Registration] = db.get_registrations_by_game_id(cursor, chosen_game.id)
-    
+
     if len(players_in_chosen_game) == 0:
         update.message.reply_text(reply["no_players_yet"], reply_markup=kb.get_perm_kb(user))
         return ConversationHandler.END
-    
+
     players_msg: str = ""
-    players_msg_reserve: str = ""   #TODO НОРМ ОБРАБОТКУ ОЧЕРЕДЕЙ РЕЗЕРВАЦИИ
+    players_msg_reserve: str = ""  # TODO НОРМ ОБРАБОТКУ ОЧЕРЕДЕЙ РЕЗЕРВАЦИИ
     counter = 0
     reserve_counter = 0
     for one_player in players_in_chosen_game:
@@ -373,11 +371,11 @@ def games_show_players(update: Update, context: CallbackContext) -> int:
         else:
             counter += 1
             players_msg += "\n" + str(counter) + ". " + db.get_player_by_id(cursor, one_player.user_id).name
-            
+
     res_reply = reply["games_player_list"] + players_msg
     if players_msg_reserve != "":
         res_reply += "\n\n" + reply["games_reserve_list"] + players_msg_reserve
-    
+
     update.message.reply_text(res_reply, reply_markup=kb.get_perm_kb(user))
     return ConversationHandler.END
 
@@ -393,11 +391,11 @@ def leave_game(update: Update, context: CallbackContext) -> int:
     """
     user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
     user_games: list[game.Game] = db.get_games_by_player_id(cursor, user.id)
-    
+
     if user.id < 0:
         update.message.reply_text(reply["error_not_registered"], reply_markup=kb.start_markup)
         return ConversationHandler.END
-    
+
     if len(user_games) == 0:
         update.message.reply_text(reply["no_games_yet"], reply_markup=kb.get_perm_kb(user))
         return ConversationHandler.END
@@ -419,17 +417,17 @@ def leave_success(update: Update, context: CallbackContext) -> int:
     answer: str = update.message.text
     games_kb: list[str] = context.chat_data["game_list"]
     chosen_games: game.Game
-    
+
     if [answer] not in games_kb:
         update.message.reply_text(reply["error_wrong_game_chosen"], reply_markup=kb.get_game_markup(games_kb))
         return ASKED_PLAYERS_LIST
-    
+
     game_id: int = int(answer.split("]")[0][1:])
     chosen_games = db.get_game_by_id(cursor, game_id)
-    
+
     db.remove_registration(connect, cursor, user.id, chosen_games.id)
     update.message.reply_text(reply["left_game"], reply_markup=kb.get_perm_kb(user))
-    #TODO допилить резервацию
+    # TODO допилить резервацию
     return ConversationHandler.END
 
 

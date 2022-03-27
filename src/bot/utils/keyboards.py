@@ -1,5 +1,4 @@
 """A module that implements the visual part of the bot by using ReplyKeyboardMarkup."""
-import sqlite3
 from telegram import ReplyKeyboardMarkup
 
 """ВРЕМЕННАЯ МЕРА ПОКА НЕ ПРОПИШЕМ ПУТИ ЧЕРЕЗ setup.py"""
@@ -9,7 +8,6 @@ import sys
 sys.path.append(os.getcwd() + "/../../../")
 """"""
 
-from src.db import database as db
 from src.classes import game
 from src.classes import player
 
@@ -35,7 +33,7 @@ def get_perm_kb(user: player.Player) -> ReplyKeyboardMarkup:
     return adm_menu_markup if user.is_adm else user_menu_markup
 
 
-def get_game_kb(games: list[game.Game]) -> list:  # type: ignore
+def get_game_kb(games: list[game.Game]) -> list:
     """
     Get a template for games keyboard.
 
@@ -49,7 +47,7 @@ def get_game_kb(games: list[game.Game]) -> list:  # type: ignore
     return games_kb
 
 
-def get_game_markup(games_kb: [game.Game]) -> ReplyKeyboardMarkup:  # type: ignore
+def get_game_markup(games_kb: list[game.Game]) -> ReplyKeyboardMarkup:
     """
     Get a keyboard containing upcoming games.
 

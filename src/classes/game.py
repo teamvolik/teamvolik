@@ -75,6 +75,6 @@ class Game:
         :return: the string to be output in the telegram response
         """
         if self.description != "":
-            return "\n".join([str(self.date), self.place, str(self.max_players), self.description])  #TODO Сделать более норм вывод
+            return "\n".join([str(self.date), self.place, str(self.max_players), self.description])  # TODO Сделать более норм вывод
         else:
             return "\n".join([str(self.date), self.place, str(self.max_players)])
