@@ -18,7 +18,7 @@ import src.classes.registration as registration
 DATABASE_NAME: str = "database.sqlite"
 
 
-def connect(db_name: str = DATABASE_NAME) -> (sqlite3.Connection, sqlite3.Cursor):  # type: ignore
+def connect(db_name: str = DATABASE_NAME) -> tuple[sqlite3.Connection, sqlite3.Cursor]:
     """
     Get all necessary sqlite objects.
 
@@ -93,7 +93,7 @@ def add_player(connection: sqlite3.Connection, db_cursor: sqlite3.Cursor, new_pl
     return new_player
 
 
-def get_players(db_cursor: sqlite3.Cursor) -> [player.Player]:  # type: ignore
+def get_players(db_cursor: sqlite3.Cursor) -> list[player.Player]:
     """
     Get players from database.
 
@@ -149,7 +149,7 @@ def add_game(connection: sqlite3.Connection, db_cursor: sqlite3.Cursor, new_game
     return new_game
 
 
-def get_games(db_cursor: sqlite3.Cursor) -> [game.Game]:  # type: ignore
+def get_games(db_cursor: sqlite3.Cursor) -> list[game.Game]:
     """
     Get games from database.
 
@@ -162,7 +162,7 @@ def get_games(db_cursor: sqlite3.Cursor) -> [game.Game]:  # type: ignore
     return games
 
 
-def get_future_games(db_cursor: sqlite3.Cursor) -> [game.Game]:  # type: ignore
+def get_future_games(db_cursor: sqlite3.Cursor) -> list[game.Game]:
     """
     Get games that will take place in the future.
 
@@ -177,7 +177,7 @@ def get_future_games(db_cursor: sqlite3.Cursor) -> [game.Game]:  # type: ignore
     return games
 
 
-def get_game_by_id(db_cursor: sqlite3.Cursor, id: int) -> game.Game:  # type: ignore
+def get_game_by_id(db_cursor: sqlite3.Cursor, id: int) -> game.Game:
     """
     Get game by game id from database.
 
@@ -204,7 +204,7 @@ def add_registration(connection: sqlite3.Connection, db_cursor: sqlite3.Cursor, 
     return new_registration
 
 
-def get_registrations(db_cursor: sqlite3.Cursor) -> [registration.Registration]:  # type: ignore
+def get_registrations(db_cursor: sqlite3.Cursor) -> list[registration.Registration]:
     """
     Get registrations from database.
 
@@ -217,7 +217,7 @@ def get_registrations(db_cursor: sqlite3.Cursor) -> [registration.Registration]:
     return registrations
 
 
-def get_registrations_by_game_id(db_cursor: sqlite3.Cursor, game_id: int) -> [registration.Registration]:  # type: ignore
+def get_registrations_by_game_id(db_cursor: sqlite3.Cursor, game_id: int) -> list[registration.Registration]:
     """
     Get a list of registration by game id.
 
@@ -233,7 +233,7 @@ def get_registrations_by_game_id(db_cursor: sqlite3.Cursor, game_id: int) -> [re
     return registrations
 
 
-def get_registrations_by_player_id(db_cursor: sqlite3.Cursor, player_id: int) -> [registration.Registration]:  # type: ignore
+def get_registrations_by_player_id(db_cursor: sqlite3.Cursor, player_id: int) -> list[registration.Registration]:
     """
     Get a list of registrations by player id.
 
@@ -264,7 +264,7 @@ def remove_registration(connection: sqlite3.Connection, db_cursor: sqlite3.Curso
 
 
 # ======================================================================================================================
-def get_games_by_player_id(db_cursor: sqlite3.Cursor, player_id: int) -> [game.Game]:  # type: ignore
+def get_games_by_player_id(db_cursor: sqlite3.Cursor, player_id: int) -> list[game.Game]:
     """
     Get a list of current games for which the player is registered.
 
@@ -282,7 +282,7 @@ def get_games_by_player_id(db_cursor: sqlite3.Cursor, player_id: int) -> [game.G
     return games
 
 
-def get_players_by_game_id(db_cursor: sqlite3.Cursor, game_id: int) -> [player.Player]:  # type: ignore
+def get_players_by_game_id(db_cursor: sqlite3.Cursor, game_id: int) -> list[player.Player]:
     """
     Get a list of players that are signed up for a game.
 

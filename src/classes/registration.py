@@ -12,7 +12,7 @@ class Registration:
     is_reserve: bool
     time: datetime.datetime
 
-    def __init__(self, user_id: int = -1, game_id: int = -1, is_paid: bool = False, is_reserve: bool = False, time: int | None = None) -> None:
+    def __init__(self, user_id: int = -1, game_id: int = -1, is_paid: bool = False, is_reserve: bool = False, time: int or None = None) -> None:
         """
         Initialize Registration object.
 
