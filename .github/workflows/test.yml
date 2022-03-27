@@ -32,7 +32,7 @@ jobs:
         run: |
           pip install coverage
           coverage run -m unittest
-          coverage json
+          coverage xml
 
       - name: Generate code coverage report
         uses: codecov/codecov-action@v2
