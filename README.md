@@ -13,7 +13,7 @@
 
 Telegram bot, which greatly simplifies registration for local beach volleyball games.
 
-## Formulation of the problem
+## What's inside
 
 - [x] Write a basic version of the bot with which you can:
   - Create games (for administrators);
