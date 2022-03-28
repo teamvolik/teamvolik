@@ -13,7 +13,7 @@ class Game:
 
     def __init__(
         self,
-        date: int or datetime.datetime or str = datetime.datetime(day=1, month=1, year=1900),
+        date: int or datetime.datetime or str = datetime.datetime(day=1, month=1, year=1990),
         place: str = "UNDEFINED",
         id: int = 0,
         max_players: int = 8,
@@ -29,7 +29,7 @@ class Game:
         :param description: game description
         """
         self.id = id
-        if isinstance(date, int):
+        if isinstance(date, int) or isinstance(date, float):
             self.date = datetime.datetime.fromtimestamp(date)
         elif isinstance(date, str):
             self.date = datetime.datetime.strptime(date, "%d.%m.%Y %H:%M")
@@ -56,7 +56,7 @@ class Game:
         return self.date.timestamp(), self.place, self.max_players, self.description
 
     @staticmethod
-    def from_sqlite_table(game_info: tuple) -> "Game":
+    def from_sqlite_table(game_info: tuple or None) -> "Game":
         """
         Get Game object from database record.
 
