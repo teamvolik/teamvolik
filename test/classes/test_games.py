@@ -13,7 +13,6 @@ class GamesTest(unittest.TestCase):
         yet_another_game = game.Game("15.06.2001 09:15", "Chelyabinsk", 1, 4, "game")
         self.assertTrue(str(yet_another_game) == "Game(id=1, date=2001-06-15 09:15:00, place=Chelyabinsk, max_players=4, description=game)")
 
-
     def test_to_telegram_reply(self):
         some_game_with_description = game.Game("15.06.2001 09:15", "Chelyabinsk", 1, 4, "game")
         self.assertTrue(some_game_with_description.to_telegram_reply() == "2001-06-15 09:15:00\nChelyabinsk\n4\ngame")
