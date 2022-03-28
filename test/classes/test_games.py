@@ -25,7 +25,7 @@ class GamesTest(unittest.TestCase):
 
     def test_from_sqlite_table(self):
         self.assertTrue(str(game.Game.from_sqlite_table(None)) == str(game.Game()))
-        game_info = (datetime.datetime(1990, 1, 1, 0, 0).timestamp(), 0.0, "F", 2, "F")
+        game_info = (0, datetime.datetime(1990, 1, 1, 0, 0).timestamp(), "F", 2, "F")
         self.assertTrue(str(game.Game.from_sqlite_table(game_info)) == str(game.Game("01.01.1990 00:00", "F", 0, 2, "F")))
 
 
