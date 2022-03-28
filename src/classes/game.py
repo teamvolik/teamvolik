@@ -35,6 +35,7 @@ class Game:
             self.date = datetime.datetime.strptime(date, "%d.%m.%Y %H:%M")
         else:
             self.date = date
+        self.date = self.date.replace(microsecond=0)
         self.place = place
         self.max_players = max_players
         self.description = description
