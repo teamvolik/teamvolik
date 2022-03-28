@@ -19,7 +19,7 @@ class Player:
         self,
         id: int = -1,
         name: str = "UNDEFINED",
-        is_adm: bool = 0,
+        is_adm: bool = False,
         games: int = 0,
         pitch: float = 0.0,
         hold: float = 0.0,
@@ -75,7 +75,7 @@ class Player:
         )
 
     @staticmethod
-    def from_sqlite_table(player_info: tuple) -> "Player":
+    def from_sqlite_table(player_info: tuple or None) -> "Player":
         """
         Get Player object from database record.
 

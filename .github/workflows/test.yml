@@ -27,3 +27,15 @@ jobs:
 
       - name: Run tests
         run: python -m unittest
+
+      - name: Generate Report
+        run: |
+          pip install coverage
+          coverage run -m unittest
+          coverage xml
+
+      - name: Generate code coverage report
+        uses: codecov/codecov-action@v2
+        with:
+          flags: unittests
+          fail_ci_if_error: true
