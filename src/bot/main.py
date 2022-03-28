@@ -238,10 +238,13 @@ def reg_game(update: Update, context: CallbackContext) -> int:
     """
     user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
     games: list[game.Game] = db.get_future_games(cursor)
+    user_games: list[int] = list(map(lambda x: x.game_id, db.get_registrations_by_player_id(cursor, user.id)))
 
     if user.id < 0:
         update.message.reply_text(reply["error_not_registered"], reply_markup=kb.start_markup)
         return ConversationHandler.END
+
+    games = list(filter(lambda x: x.id not in user_games, games))
 
     if len(games) == 0:
         update.message.reply_text(reply["no_games_yet"], reply_markup=kb.get_perm_kb(user))
