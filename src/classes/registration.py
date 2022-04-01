@@ -29,7 +29,7 @@ class Registration:
         if isinstance(time, int):
             self.time = datetime.datetime.fromtimestamp(time)
         else:
-            self.time = datetime.datetime.now(tz=pytz.timezone("Europe/Moscow"))
+            self.time = datetime.datetime.now(tz=pytz.timezone("Europe/Moscow")).replace(microsecond=0)
 
     def __str__(self) -> str:
         """
@@ -37,10 +37,10 @@ class Registration:
 
         :return: string of Registration object
         """
-        return f"Registration(user_id={self.user_id}, game_id={self.game_id}, is_paid={self.is_paid}, is_reserve={self.is_reserve},time={self.time})"
+        return f"Registration(user_id={self.user_id}, game_id={self.game_id}, is_paid={self.is_paid}, is_reserve={self.is_reserve}, time={self.time})"
 
     @staticmethod
-    def from_sqlite_table(registration_info: tuple) -> "Registration":
+    def from_sqlite_table(registration_info: tuple or None) -> "Registration":
         """
         Get Registration object from database record.
 
@@ -50,7 +50,7 @@ class Registration:
         if registration_info is None:
             return Registration()
         else:
-            return Registration(registration_info[0], registration_info[1], registration_info[2], registration_info[3], datetime.datetime.fromtimestamp(registration_info[4]))
+            return Registration(registration_info[0], registration_info[1], registration_info[2], registration_info[3], registration_info[4])
 
     def to_sqlite_table(self) -> (int, int, bool, bool, float):  # type: ignore
         """
