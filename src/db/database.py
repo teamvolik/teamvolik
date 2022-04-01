@@ -114,7 +114,7 @@ def get_player_by_id(db_cursor: sqlite3.Cursor, id: int) -> player.Player:
     :param id: player id
     :return: player object
     """
-    db_cursor.execute("""SELECT * FROM players WHERE id = %d""" % id)
+    db_cursor.execute("""SELECT * FROM players WHERE id = ?""", [id])
     player_info = db_cursor.fetchone()
     return player.Player.from_sqlite_table(player_info)
 
@@ -169,7 +169,7 @@ def get_future_games(db_cursor: sqlite3.Cursor) -> list[game.Game]:
     :param db_cursor: database object to interact with database
     :return: list of future games
     """
-    db_cursor.execute("""SELECT * FROM games WHERE date >= %d""" % datetime.datetime.now(tz=pytz.timezone("Europe/Moscow")).timestamp())
+    db_cursor.execute("""SELECT * FROM games WHERE date >= ?""", [datetime.datetime.now(tz=pytz.timezone("Europe/Moscow")).timestamp()])
     game_infos = db_cursor.fetchall()
     games = []
     for game_info in game_infos:
@@ -272,9 +272,10 @@ def get_games_by_player_id(db_cursor: sqlite3.Cursor, player_id: int) -> list[ga
     :param player_id: player id
     :return: a list of player's games that haven't finished yet
     """
-    db_cursor.execute("""SELECT game_id FROM registrations WHERE user_id = %d""" % player_id)
+    db_cursor.execute("""SELECT game_id FROM registrations WHERE user_id = ?""", [player_id])
     game_ids = [str(id[0]) for id in db_cursor.fetchall()]
-    db_cursor.execute("""SELECT * FROM games WHERE id IN (%s)""" % ", ".join(game_ids))
+    positions = f"""({", ".join(["?"] * len(game_ids))})"""
+    db_cursor.execute(f"""SELECT * FROM games WHERE id IN {positions}""", game_ids)  # nosec
     game_infos = db_cursor.fetchall()
     games = []
     for game_info in game_infos:
@@ -292,7 +293,8 @@ def get_players_by_game_id(db_cursor: sqlite3.Cursor, game_id: int) -> list[play
     """
     db_cursor.execute("""SELECT user_id FROM registrations WHERE game_id = ?""", [game_id])
     player_ids = [str(id[0]) for id in db_cursor.fetchall()]
-    db_cursor.execute("""SELECT * FROM players WHERE id IN (%s)""" % ", ".join(player_ids))
+    positions = f"""({", ".join(["?"] * len(player_ids))})"""
+    db_cursor.execute(f"""SELECT * FROM players WHERE id IN {positions}""", player_ids)  # nosec
     player_infos = db_cursor.fetchall()
     players = []
     for player_info in player_infos:
