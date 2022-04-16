@@ -1,0 +1,229 @@
+# Russian translations for PROJECT.
+# Copyright (C) 2022 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2022-04-17 01:19+0300\n"
+"PO-Revision-Date: 2022-04-17 01:20+0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: src/bot/bot.py:78
+msgid "Ok"
+msgstr "Ок"
+
+#: src/bot/bot.py:211 src/bot/bot.py:297 src/bot/utils/keyboards.py:8
+msgid "Yes"
+msgstr "Да"
+
+#: src/bot/bot.py:215 src/bot/bot.py:302 src/bot/utils/keyboards.py:8
+msgid "No"
+msgstr "Нет"
+
+#: src/bot/bot.py:466 src/bot/bot.py:493 src/bot/utils/keyboards.py:8
+#: src/bot/utils/keyboards.py:11 src/bot/utils/keyboards.py:51
+msgid "Cancel"
+msgstr "Отмена"
+
+#: src/bot/bot.py:470 src/bot/utils/keyboards.py:10
+msgid "Create a game"
+msgstr "Создать игру"
+
+#: src/bot/bot.py:472 src/bot/utils/keyboards.py:9
+#: src/bot/utils/keyboards.py:10
+msgid "Sign up for a game"
+msgstr "Записаться на игру"
+
+#: src/bot/bot.py:473 src/bot/utils/keyboards.py:9
+#: src/bot/utils/keyboards.py:10
+msgid "List of games"
+msgstr "Список игр"
+
+#: src/bot/bot.py:474 src/bot/utils/keyboards.py:9
+#: src/bot/utils/keyboards.py:10
+msgid "Leave the game"
+msgstr "Покинуть игру"
+
+#: src/bot/utils/reply_list.py:6
+msgid "#TODO"
+msgstr ""
+
+#: src/bot/utils/reply_list.py:7
+msgid "Welcome to teamvolik bot. First you need to sign up."
+msgstr "Добро пожаловать в бот teamvolik. Сначала вам нужно зарегистрироваться."
+
+#: src/bot/utils/reply_list.py:8
+msgid ""
+"Do you consent to the storage and processing of personal data (Name and "
+"Surname)? This is to facilitate registration for games."
+msgstr "Даете ли вы согласие на хранение и обработку персональных данных (ФИО)? Это сделано для облегчения регистрации в играх."
+
+#: src/bot/utils/reply_list.py:9
+msgid "Thanks! We promise to keep your personal data and not distribute it."
+msgstr "Спасибо! Мы обещаем хранить ваши личные данные и не распространять их."
+
+#: src/bot/utils/reply_list.py:10
+msgid ""
+"Thanks! We respect your personal data and will not store it, but you will"
+" have to write your full name each time you register for the game."
+msgstr "Спасибо! Мы уважаем ваши личные данные и не будем их хранить, но вам придется писать свое полное имя каждый раз, когда вы регистрируетесь в игре."
+
+#: src/bot/utils/reply_list.py:11
+msgid "Enter full name:"
+msgstr "Введите ФИО:"
+
+#: src/bot/utils/reply_list.py:12
+msgid "You have successfully signed up."
+msgstr "Вы успешно зарегистрированы."
+
+#: src/bot/utils/reply_list.py:13
+msgid "Cancel."
+msgstr "Отмена."
+
+#: src/bot/utils/reply_list.py:14
+msgid "You do not have permission to execute this command."
+msgstr "У вас нет прав на выполнение данной команды."
+
+#: src/bot/utils/reply_list.py:16
+msgid ""
+"On what date do you want to open the registration for the game? "
+"(DD.MM.YYYY HH:MM)"
+msgstr "На какую дату Вы хотите открыть регистрацию на игру? (ДД.ММ.ГГГГ ЧЧ:ММ)"
+
+#: src/bot/utils/reply_list.py:17
+msgid "Where do you want to play the game?"
+msgstr "Где Вы хотите провести игру?"
+
+#: src/bot/utils/reply_list.py:18
+msgid "Specify the number of players:"
+msgstr "Укажите число игроков:"
+
+#: src/bot/utils/reply_list.py:19
+msgid ""
+"Add a description to the game (Leave the field blank if you don't want to"
+" add a description):"
+msgstr "Добавьте описание к игре (оставьте поле пустым, если не хотите добавлять описание):"
+
+#: src/bot/utils/reply_list.py:20
+msgid "Is everything right?"
+msgstr "Всё верно?"
+
+#: src/bot/utils/reply_list.py:21
+msgid "The game has been successfully created!"
+msgstr "Игра была успешно создана!"
+
+#: src/bot/utils/reply_list.py:22
+msgid "The game has been cancelled."
+msgstr "Создание игры было отменено."
+
+#: src/bot/utils/reply_list.py:24
+msgid "Incorrect date format. Enter the date again. (DD.MM.YYYY HH:MM)"
+msgstr "Некорректный формат даты. Введите дату еще раз. (ДД.ММ.ГГГГ ЧЧ:ММ)"
+
+#: src/bot/utils/reply_list.py:25
+msgid "Incorrect number of players, please enter the number of players again:"
+msgstr "Некорректное количество игроков, попробуйте еще раз:"
+
+#: src/bot/utils/reply_list.py:27
+msgid "Choose one game from the list:"
+msgstr "Выберите игру из списка:"
+
+#: src/bot/utils/reply_list.py:28
+msgid "You have successfully registered for the game."
+msgstr "Вы успешно зарегистрированы на игру."
+
+#: src/bot/utils/reply_list.py:29
+msgid ""
+"Unfortunately, there are no more places left for this game. Try signing "
+"up for another one."
+msgstr "К сожалению, в данной игре больше нет свободных мест, попробуйте зарегистрироваться на другую игру."
+
+#: src/bot/utils/reply_list.py:30
+msgid ""
+"Unfortunately, there are no more places left for this game. Do you want "
+"to reserve?"
+msgstr "К сожалению, в данной игре больше нет свободных мест. Хотите зарезервировать место?"
+
+#: src/bot/utils/reply_list.py:31
+msgid "Game selection successfully deselected."
+msgstr "Выбор игры успешно отменен."
+
+#: src/bot/utils/reply_list.py:32
+msgid ""
+"You were moved from the reserve to the list of active players in one of "
+"the games."
+msgstr "Вы были перемещены из списка резерва в список активных игроков в одной из игр."
+
+#: src/bot/utils/reply_list.py:34
+msgid "Select a game to see who signed up for it."
+msgstr "Выберите игру, чтобы увидеть кто на неё уже зарегистрирован."
+
+#: src/bot/utils/reply_list.py:35
+msgid "List of players for this game:"
+msgstr "Список игроков для данной игры:"
+
+#: src/bot/utils/reply_list.py:36
+msgid "List of players from reserve:"
+msgstr "Список резерва:"
+
+#: src/bot/utils/reply_list.py:38
+msgid "There are currently no games available to sign up for."
+msgstr "В данный момент нет ни одной игры, на которую можно записаться."
+
+#: src/bot/utils/reply_list.py:39
+msgid "No one is registered for this game."
+msgstr "На данную игру никто не зарегистрирован."
+
+#: src/bot/utils/reply_list.py:41
+msgid "Select the game you want to leave."
+msgstr "Выберите игру, которую хотите покинуть."
+
+#: src/bot/utils/reply_list.py:42
+msgid "The game has been successfully abandoned."
+msgstr "Вы успешно покинули игру."
+
+#: src/bot/utils/reply_list.py:44
+msgid "Sorry, but you need to register. Click on the button."
+msgstr "Извините, сначала Вам нужно зарегистрироваться. Нажмите на кнопку."
+
+#: src/bot/utils/reply_list.py:45
+msgid "Sorry, but you are already registered."
+msgstr "Извините, вы уже зарегистрированы."
+
+#: src/bot/utils/reply_list.py:46
+msgid ""
+"Full name entered incorrectly, make sure that the entered data is correct"
+" (two words are required)."
+msgstr "ФИО введено некорректно, попробуйте ещё раз."
+
+#: src/bot/utils/reply_list.py:47
+msgid ""
+"The date is entered incorrectly, make sure that the entered data is "
+"correct (DD.MM.YYYY HH:MM)."
+msgstr "Некорректный формат даты. Введите дату еще раз. (ДД.ММ.ГГГГ ЧЧ:ММ)"
+
+#: src/bot/utils/reply_list.py:48
+msgid ""
+"Incorrect number of players entered, check that the entered data is "
+"correct (requires a positive number)."
+msgstr "Некорректное число игроков, попробуйте ещё раз."
+
+#: src/bot/utils/reply_list.py:49
+msgid "Please select the game again."
+msgstr "Пожалуйста, выберите игру ещё раз."
+
+#: src/bot/utils/reply_list.py:50
+msgid "Please select one of the buttons."
+msgstr "Пожалуйста, выберите одну из кнопок."
+

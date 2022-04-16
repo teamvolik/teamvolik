@@ -2,17 +2,11 @@
 import json
 import logging
 import sqlite3
+import locale
 
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext, ConversationHandler
 from telegram.ext.filters import Filters
-
-"""ВРЕМЕННАЯ МЕРА ПОКА НЕ ПРОПИШЕМ ПУТИ ЧЕРЕЗ setup.py"""
-import os  # noqa E402
-import sys
-
-sys.path.append(os.getcwd() + "/../../")
-""""""
 
 from src.db import database as db
 from src.bot.utils import keyboards as kb
@@ -20,6 +14,7 @@ from src.bot.utils.reply_list import reply_list as reply
 from src.classes import game
 from src.classes import player
 from src.classes import registration
+from src.bot.utils.localization import _
 
 
 adms = []
@@ -68,7 +63,7 @@ def start(update: Update, context: CallbackContext) -> int:
         return ConversationHandler.END
     else:
         update.message.reply_text(reply["start"])
-        update.message.reply_text(reply["ask_perm"], reply_markup=ReplyKeyboardMarkup([["Ok"]], one_time_keyboard=True, resize_keyboard=True))
+        update.message.reply_text(reply["ask_perm"], reply_markup=ReplyKeyboardMarkup([[_("Ok")]], one_time_keyboard=True, resize_keyboard=True))
         return ASKED_TO_STORE_VDATA
 
 
@@ -81,7 +76,7 @@ def vdata_ask_perm(update: Update, context: CallbackContext) -> int:
     :return: int
     """
     answer: str = update.message.text
-    if answer.upper() == "OK":
+    if answer.upper() == (_("Ok")).upper():
         update.message.reply_text(reply["yes_permission"])
         update.message.reply_text(reply["ask_name"])
         return RECORD_NAME
@@ -99,9 +94,15 @@ def signup_success(update: Update, context: CallbackContext) -> int:
     :return: int
     """
     name: str = update.message.text
-    if len(name.split()) != len("Full Name".split()):
-        update.message.reply_text(reply["error_wrong_name_format"])
-        return RECORD_NAME
+    srv_locale: tuple[str | None, str | None] = locale.getdefaultlocale()
+    if srv_locale[0] == "ru" or srv_locale[0] == "ru_RU":
+        if len(name.split()) != len("Ф И О".split()):
+            update.message.reply_text(reply["error_wrong_name_format"])
+            return RECORD_NAME
+    else:
+        if len(name.split()) != len("Full Name".split()):
+            update.message.reply_text(reply["error_wrong_name_format"])
+            return RECORD_NAME
 
     newuser: player.Player = player.Player(update.message.chat_id, name, update.message.chat_id in adms)
     db.add_player(connect, cursor, newuser)
@@ -214,11 +215,11 @@ def cr_finish(update: Update, context: CallbackContext) -> int:
     newgame: game.Game = context.chat_data["newgame"]
     user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
 
-    if answer.upper() == "YES":
+    if answer.upper() == (_("Yes")).upper():
         db.add_game(connect, cursor, newgame)
         update.message.reply_text(reply["adm_game_created"], reply_markup=kb.get_perm_kb(user))
         return ConversationHandler.END
-    elif answer.upper() == "NO":
+    elif answer.upper() == (_("No")).upper():
         update.message.reply_text(reply["adm_ask_date"], reply_markup=kb.cancel_markup)
         return ASKED_DATE
     else:
@@ -300,12 +301,12 @@ def reg_added_to_reserve(update: Update, context: CallbackContext) -> int:
     chosen_game: game.Game = context.chat_data["chosen_game"]
     newreg: registration.Registration = registration.Registration(user.id, chosen_game.id, is_reserve=True)  # TODO
 
-    if answer.upper() == "YES":
+    if answer.upper() == (_("Yes")).upper():
         db.add_registration(connect, cursor, newreg)
         reserved_slots: int = len(list(filter(lambda x: x.is_reserve, db.get_registrations_by_game_id(cursor, chosen_game.id))))
         update.message.reply_text(reply["reg_success"] + "\n" + "Your position in the queue:" + str(reserved_slots), reply_markup=kb.get_perm_kb(user))
         return ConversationHandler.END
-    elif answer.upper() == "NO":
+    elif answer.upper() == (_("No")).upper():
         update.message.reply_text(reply["reg_canceled"], reply_markup=kb.get_perm_kb(user))
         return ConversationHandler.END
     else:
@@ -450,13 +451,13 @@ def leave_success(update: Update, context: CallbackContext) -> int:
 ) = range(11)
 
 
-def main() -> None:
+def start_bot() -> None:
     """
     Start the bot.
 
     :return: None
     """
-    with open("../../config.json", "r") as f:
+    with open("src/userdata/config.json", "r") as f:
         config = json.loads(f.read())
     updater = Updater(config["token"])
     dispatcher = updater.dispatcher
@@ -469,15 +470,15 @@ def main() -> None:
     cursor = connect.cursor()
     db.create_tables(connect, cursor)
 
-    base_filter = Filters.text & ~Filters.regex(r"Cancel")
+    base_filter = Filters.text & ~Filters.regex(_("Cancel"))
 
     conv_handler = ConversationHandler(
         entry_points=[
-            MessageHandler(Filters.regex(r"Create a game"), cr_game),
+            MessageHandler(Filters.regex(_("Create a game")), cr_game),
             CommandHandler("start", start),
-            MessageHandler(Filters.regex(r"Sign up for a game"), reg_game),
-            MessageHandler(Filters.regex(r"List of games"), games_show_available_list),
-            MessageHandler(Filters.regex(r"Leave the game"), leave_game),
+            MessageHandler(Filters.regex(_("Sign up for a game")), reg_game),
+            MessageHandler(Filters.regex(_("List of games")), games_show_available_list),
+            MessageHandler(Filters.regex(_("Leave the game")), leave_game),
         ],
         states={
             ASKED_DATE: [MessageHandler(base_filter, cr_get_date)],
@@ -496,14 +497,10 @@ def main() -> None:
             ASKED_GAME_TO_LEAVE: [MessageHandler(base_filter, leave_success)],
             ASKED_ABOUT_RESERVE: [MessageHandler(base_filter, reg_added_to_reserve)],
         },
-        fallbacks=[MessageHandler(Filters.regex(r"Cancel"), cancel)],
+        fallbacks=[MessageHandler(Filters.regex(_("Cancel")), cancel)],
     )
 
     dispatcher.add_handler(conv_handler)
 
     updater.start_polling()
     updater.idle()
-
-
-if __name__ == "__main__":
-    main()
