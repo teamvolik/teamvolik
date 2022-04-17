@@ -1,20 +1,14 @@
 """A module that implements the visual part of the bot by using ReplyKeyboardMarkup."""
 from telegram import ReplyKeyboardMarkup
 
-"""ВРЕМЕННАЯ МЕРА ПОКА НЕ ПРОПИШЕМ ПУТИ ЧЕРЕЗ setup.py"""
-import os
-import sys
-
-sys.path.append(os.getcwd() + "/../../../")
-""""""
-
 from src.classes import game
 from src.classes import player
+from src.bot.utils.localization import _
 
-yes_no_kb = [["Yes", "No"], ["Cancel"]]
-user_menu_kb = [["Sign up for a game", "Leave the game"], ["List of games"]]
-adm_menu_kb = [["Create a game"], ["Sign up for a game", "Leave the game"], ["List of games"]]
-cancel_kb = [["Cancel"]]
+yes_no_kb = [[_("Yes"), _("No")], [_("Cancel")]]
+user_menu_kb = [[_("Sign up for a game"), _("Leave the game")], [_("List of games")]]
+adm_menu_kb = [[_("Create a game")], [_("Sign up for a game"), _("Leave the game")], [_("List of games")]]
+cancel_kb = [[_("Cancel")]]
 
 yes_no_markup = ReplyKeyboardMarkup(yes_no_kb, resize_keyboard=True, one_time_keyboard=True)
 start_markup = ReplyKeyboardMarkup([["/start"]], resize_keyboard=True, one_time_keyboard=True)
@@ -54,6 +48,6 @@ def get_game_markup(games_kb: list[list[str]]) -> ReplyKeyboardMarkup:
     :param games_kb: a list containing other lists that will later become buttons
     :return: ReplyKeyboardMapkup
     """
-    if games_kb[-1] != ["Cancel"]:
-        games_kb.append(["Cancel"])
+    if games_kb[-1] != _("Cancel"):
+        games_kb.append(_("Cancel"))
     return ReplyKeyboardMarkup(games_kb, one_time_keyboard=True, resize_keyboard=True)

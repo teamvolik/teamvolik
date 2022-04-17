@@ -3,13 +3,6 @@ import sqlite3
 import pytz
 import datetime
 
-"""ВРЕМЕННАЯ МЕРА ПОКА НЕ ПРОПИШЕМ ПУТИ ЧЕРЕЗ setup.py"""
-import os
-import sys
-
-sys.path.append(os.getcwd() + "/../../")
-""""""
-
 import src.classes.game as game
 import src.classes.player as player
 import src.classes.registration as registration
