@@ -266,7 +266,7 @@ def reg_accept(update: Update, context: CallbackContext) -> int:  # TODO пер�
     :return: int
     """
     answer: str = update.message.text
-    games_list: list[str] = context.chat_data["game_list"]
+    games_list: list[list[str]] = context.chat_data["game_list"]
     user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
     chosen_game: game.Game
 
@@ -349,7 +349,7 @@ def games_show_players(update: Update, context: CallbackContext) -> int:
     """
     user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
     answer: str = update.message.text
-    games_kb: list[str] = context.chat_data["game_list"]
+    games_kb: list[list[str]] = context.chat_data["game_list"]
     chosen_game: game.Game
 
     if [answer] not in games_kb:
@@ -403,7 +403,7 @@ def leave_game(update: Update, context: CallbackContext) -> int:
     if len(user_games) == 0:
         update.message.reply_text(reply["no_games_yet"], reply_markup=kb.get_perm_kb(user))
         return ConversationHandler.END
-    games_kb: list[str] = kb.get_game_kb(user_games)
+    games_kb: list[list[str]] = kb.get_game_kb(user_games)
     context.chat_data["game_list"] = games_kb
     update.message.reply_text(reply["choose_game_to_leave"], reply_markup=kb.get_game_markup(games_kb))
     return ASKED_GAME_TO_LEAVE
@@ -419,7 +419,7 @@ def leave_success(update: Update, context: CallbackContext) -> int:
     """
     user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
     answer: str = update.message.text
-    games_kb: list[str] = context.chat_data["game_list"]
+    games_kb: list[list[str]] = context.chat_data["game_list"]
     chosen_games: game.Game
 
     if [answer] not in games_kb:
