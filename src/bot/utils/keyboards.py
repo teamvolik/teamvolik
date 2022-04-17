@@ -33,7 +33,7 @@ def get_perm_kb(user: player.Player) -> ReplyKeyboardMarkup:
     return adm_menu_markup if user.is_adm else user_menu_markup
 
 
-def get_game_kb(games: list[game.Game]) -> list:
+def get_game_kb(games: list[game.Game]) -> list[list[str]]:
     """
     Get a template for games keyboard.
 
@@ -47,12 +47,13 @@ def get_game_kb(games: list[game.Game]) -> list:
     return games_kb
 
 
-def get_game_markup(games_kb: list[game.Game]) -> ReplyKeyboardMarkup:
+def get_game_markup(games_kb: list[list[str]]) -> ReplyKeyboardMarkup:
     """
     Get a keyboard containing upcoming games.
 
     :param games_kb: a list containing other lists that will later become buttons
     :return: ReplyKeyboardMapkup
     """
-    games_kb.append(["Cancel"])
+    if games_kb[-1] != ["Cancel"]:
+        games_kb.append(["Cancel"])
     return ReplyKeyboardMarkup(games_kb, one_time_keyboard=True, resize_keyboard=True)
