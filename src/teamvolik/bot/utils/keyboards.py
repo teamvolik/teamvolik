@@ -1,8 +1,8 @@
 """A module that implements the visual part of the bot by using ReplyKeyboardMarkup."""
 from telegram import ReplyKeyboardMarkup
 
-from ....classes import player, game
-from .localization import _
+from teamvolik.classes import player, game
+from teamvolik.bot.utils.localization import _
 
 yes_no_kb = [[_("Yes"), _("No")], [_("Cancel")]]
 user_menu_kb = [[_("Sign up for a game"), _("Leave the game")], [_("List of games")]]

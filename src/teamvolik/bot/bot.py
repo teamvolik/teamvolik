@@ -9,12 +9,11 @@ from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext, ConversationHandler
 from telegram.ext.filters import Filters
 
-from ..db import database as db
-from .utils import keyboards as kb
-from .utils.reply_list import reply_list as reply
-from ..classes import registration, player, game
-from .utils.localization import _
-
+from teamvolik.bot.utils import keyboards as kb
+from teamvolik.bot.utils.reply_list import reply_list as reply
+from teamvolik.bot.utils.localization import _
+from teamvolik.classes import registration, player, game
+from teamvolik.db import database as db
 
 adms = []
 
