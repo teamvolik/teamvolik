@@ -3,9 +3,9 @@ import sqlite3
 import pytz
 import datetime
 
-import src.classes.game as game
-import src.classes.player as player
-import src.classes.registration as registration
+import teamvolik.classes.game as game
+import teamvolik.classes.player as player
+import teamvolik.classes.registration as registration
 
 
 DATABASE_NAME: str = "database.sqlite"

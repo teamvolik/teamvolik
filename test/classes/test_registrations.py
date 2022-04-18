@@ -1,7 +1,7 @@
 import datetime
 import unittest
 
-import src.classes.registration as registration
+import teamvolik.classes.registration as registration
 
 
 class RegistrationsTest(unittest.TestCase):

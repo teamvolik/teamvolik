@@ -1,20 +1,19 @@
 """The main module containing the main functionality of the bot."""
 import json
-import logging
-import sqlite3
 import locale
+import logging
+import os
+import sqlite3
 
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext, ConversationHandler
 from telegram.ext.filters import Filters
 
-from src.db import database as db
-from src.bot.utils import keyboards as kb
-from src.bot.utils.reply_list import reply_list as reply
-from src.classes import game
-from src.classes import player
-from src.classes import registration
-from src.bot.utils.localization import _
+from teamvolik.db import database as db
+from teamvolik.bot.utils import keyboards as kb
+from teamvolik.bot.utils.reply_list import reply_list as reply
+from teamvolik.classes import registration, player, game
+from teamvolik.bot.utils.localization import _
 
 
 adms = []
@@ -457,8 +456,20 @@ def start_bot() -> None:
 
     :return: None
     """
-    with open("src/userdata/config.json", "r") as f:
-        config = json.loads(f.read())
+    CONFIG_FOLDER = os.path.join("teamvolik", "userdata")
+    CONFIG_FNAME = "config.json"
+    CONFIG_PATH = os.path.join(CONFIG_FOLDER, CONFIG_FNAME)
+    if os.path.exists(CONFIG_PATH):
+        logger.debug(f"Found config.json with path: {CONFIG_PATH}")
+        with open(CONFIG_PATH, "r") as f:
+            config = json.loads(f.read())
+    else:
+        logger.error(f"No config.json file found. Creating {CONFIG_PATH}. Configure it and run bot again.")
+        os.makedirs(CONFIG_FOLDER)
+        new_config = open(CONFIG_PATH, "w")
+        new_config.writelines(["{\n", '  "token":  "<YOUR-TELEGRAM-TOKEN>",\n', '  "admins": [<ADMIN-ID-1>, ...],\n', '  "db_fname":  "DATABASE-FILENAME"\n', "}\n"])
+        new_config.close()
+        exit(0)
     updater = Updater(config["token"])
     dispatcher = updater.dispatcher
 

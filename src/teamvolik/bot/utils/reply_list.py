@@ -1,5 +1,5 @@
 """A module that contains a dictionary of bot responses."""
-from src.bot.utils.localization import _
+from teamvolik.bot.utils.localization import _
 
 reply_list = dict()
 

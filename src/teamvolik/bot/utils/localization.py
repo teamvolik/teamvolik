@@ -2,5 +2,5 @@
 
 import gettext
 
-translation = gettext.translation("bot", "src/localization", fallback=True)
+translation = gettext.translation("bot", "teamvolik/localization", fallback=True)
 _, ngettext = translation.gettext, translation.ngettext

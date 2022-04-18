@@ -3,3 +3,9 @@ config.json
 **.sql*
 **.mo
 **.pot
+dist/
+build/
+teamvolik.egg-info/
+.idea/
+test/_trial_temp
+src/teamvolik/userdata

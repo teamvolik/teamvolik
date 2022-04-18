@@ -1,6 +1,6 @@
 [run]
 branch = True
-source = src/
+source = src/teamvolik
 
 [report]
 exclude_lines =

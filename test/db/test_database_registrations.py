@@ -1,8 +1,8 @@
 import unittest
 import sqlite3
 
-import src.db.database as database
-import src.classes.registration as registration
+import teamvolik.db.database as database
+import teamvolik.classes.registration as registration
 
 
 class DatabaseRegistrationTest(unittest.TestCase):

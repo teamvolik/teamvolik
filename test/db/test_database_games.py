@@ -2,8 +2,8 @@ import datetime
 import unittest
 import sqlite3
 
-import src.db.database as database
-import src.classes.game as game
+import teamvolik.db.database as database
+import teamvolik.classes.game as game
 
 
 class DatabaseGamesTest(unittest.TestCase):
