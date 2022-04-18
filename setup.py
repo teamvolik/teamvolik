@@ -1,17 +1,16 @@
 """Script for deployment."""
 from setuptools import setup
-from babel.messages import frontend as babel
+
+import versioneer
 
 setup(
     name="teamvolik",
-    version="0.1.1",
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     packages=["teamvolik", "teamvolik.db", "teamvolik.bot", "teamvolik.bot.utils", "teamvolik.classes"],
     package_dir={"teamvolik": "src/teamvolik"},
     package_data={
         "teamvolik": ["localization/ru/LC_MESSAGES/bot.po"],
-    },
-    cmdclass={
-        "compile_catalog": babel.compile_catalog,
     },
     url="https://github.com/teamvolik/teamvolik",
     license="MIT",

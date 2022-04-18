@@ -3,15 +3,17 @@ import sqlite3
 import pytz
 import datetime
 
-from teamvolik.classes import game
-from teamvolik.classes import player
-from teamvolik.classes import registration
+from typing import Tuple, List
+
+from ..classes import game
+from ..classes import player
+from ..classes import registration
 
 
 DATABASE_NAME: str = "database.sqlite"
 
 
-def connect(db_name: str = DATABASE_NAME) -> tuple[sqlite3.Connection, sqlite3.Cursor]:
+def connect(db_name: str = DATABASE_NAME) -> Tuple[sqlite3.Connection, sqlite3.Cursor]:
     """
     Get all necessary sqlite objects.
 
@@ -86,7 +88,7 @@ def add_player(connection: sqlite3.Connection, db_cursor: sqlite3.Cursor, new_pl
     return new_player
 
 
-def get_players(db_cursor: sqlite3.Cursor) -> list[player.Player]:
+def get_players(db_cursor: sqlite3.Cursor) -> List[player.Player]:
     """
     Get players from database.
 
@@ -142,7 +144,7 @@ def add_game(connection: sqlite3.Connection, db_cursor: sqlite3.Cursor, new_game
     return new_game
 
 
-def get_games(db_cursor: sqlite3.Cursor) -> list[game.Game]:
+def get_games(db_cursor: sqlite3.Cursor) -> List[game.Game]:
     """
     Get games from database.
 
@@ -155,7 +157,7 @@ def get_games(db_cursor: sqlite3.Cursor) -> list[game.Game]:
     return games
 
 
-def get_future_games(db_cursor: sqlite3.Cursor) -> list[game.Game]:
+def get_future_games(db_cursor: sqlite3.Cursor) -> List[game.Game]:
     """
     Get games that will take place in the future.
 
@@ -197,7 +199,7 @@ def add_registration(connection: sqlite3.Connection, db_cursor: sqlite3.Cursor, 
     return new_registration
 
 
-def get_registrations(db_cursor: sqlite3.Cursor) -> list[registration.Registration]:
+def get_registrations(db_cursor: sqlite3.Cursor) -> List[registration.Registration]:
     """
     Get registrations from database.
 
@@ -210,7 +212,7 @@ def get_registrations(db_cursor: sqlite3.Cursor) -> list[registration.Registrati
     return registrations
 
 
-def get_registrations_by_game_id(db_cursor: sqlite3.Cursor, game_id: int) -> list[registration.Registration]:
+def get_registrations_by_game_id(db_cursor: sqlite3.Cursor, game_id: int) -> List[registration.Registration]:
     """
     Get a list of registration by game id.
 
@@ -226,7 +228,7 @@ def get_registrations_by_game_id(db_cursor: sqlite3.Cursor, game_id: int) -> lis
     return registrations
 
 
-def get_registrations_by_player_id(db_cursor: sqlite3.Cursor, player_id: int) -> list[registration.Registration]:
+def get_registrations_by_player_id(db_cursor: sqlite3.Cursor, player_id: int) -> List[registration.Registration]:
     """
     Get a list of registrations by player id.
 
@@ -257,7 +259,7 @@ def remove_registration(connection: sqlite3.Connection, db_cursor: sqlite3.Curso
 
 
 # ======================================================================================================================
-def get_games_by_player_id(db_cursor: sqlite3.Cursor, player_id: int) -> list[game.Game]:
+def get_games_by_player_id(db_cursor: sqlite3.Cursor, player_id: int) -> List[game.Game]:
     """
     Get a list of current games for which the player is registered.
 
@@ -276,7 +278,7 @@ def get_games_by_player_id(db_cursor: sqlite3.Cursor, player_id: int) -> list[ga
     return games
 
 
-def get_players_by_game_id(db_cursor: sqlite3.Cursor, game_id: int) -> list[player.Player]:
+def get_players_by_game_id(db_cursor: sqlite3.Cursor, game_id: int) -> List[player.Player]:
     """
     Get a list of players that are signed up for a game.
 
