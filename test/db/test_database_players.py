@@ -1,8 +1,8 @@
 import unittest
 import sqlite3
 
-import teamvolik.db.database as database
-import teamvolik.classes.player as player
+import src.teamvolik.db.database as database
+import src.teamvolik.classes.player as player
 
 
 class DatabasePlayersTest(unittest.TestCase):

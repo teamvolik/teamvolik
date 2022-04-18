@@ -1,10 +1,10 @@
 import unittest
 import sqlite3
 
-import teamvolik.db.database as database
-import teamvolik.classes.game as game
-import teamvolik.classes.player as player
-import teamvolik.classes.registration as registration
+import src.teamvolik.db.database as database
+import src.teamvolik.classes.game as game
+import src.teamvolik.classes.player as player
+import src.teamvolik.classes.registration as registration
 
 
 class DatabaseTest(unittest.TestCase):
