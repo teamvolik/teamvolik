@@ -12,3 +12,4 @@ ignore_errors = True
 omit =
     test/*
     src/teamvolik/_version.py
+    versioneer.py
