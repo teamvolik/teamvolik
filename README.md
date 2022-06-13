@@ -13,8 +13,7 @@
 
 Telegram bot, which greatly simplifies registration for local beach volleyball games.
 
-## What's inside
-
+## What's inside:
 - [x] Write a basic version of the bot with which you can:
   - Create games (for administrators);
   - Join games / leave games;
@@ -22,6 +21,17 @@ Telegram bot, which greatly simplifies registration for local beach volleyball g
 - [ ] Add a payment system for paid games;
 - [ ] Add optional player characteristics (pitch power, etc.) in order to build more balanced teams;
 - [ ] Add additional features for convenient use of the bot;
+
+## config.json
+In order to make bot work, you need to put `config.json` file into `teamvolik/userdata/`.
+Here is what you need to put into config file: 
+```
+{
+  "token":  "<YOUR-TELEGRAM-TOKEN>",
+  "admins": [<ADMIN-ID-1>, ...],
+  "db_fname":  "<DATABASE-FILENAME>"
+}
+```
 
 ## Suggested solution tools
 

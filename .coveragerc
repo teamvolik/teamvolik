@@ -1,6 +1,6 @@
 [run]
 branch = True
-source = src/
+source = src/teamvolik
 
 [report]
 exclude_lines =
@@ -11,3 +11,5 @@ exclude_lines =
 ignore_errors = True
 omit =
     test/*
+    src/teamvolik/_version.py
+    versioneer.py

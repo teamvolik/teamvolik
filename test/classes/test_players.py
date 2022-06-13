@@ -1,6 +1,6 @@
 import unittest
 
-import src.classes.player as player
+import src.teamvolik.classes.player as player
 
 
 class PlayersTest(unittest.TestCase):

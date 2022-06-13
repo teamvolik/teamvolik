@@ -1,7 +1,7 @@
 import datetime
 import unittest
 
-import src.classes.game as game
+import src.teamvolik.classes.game as game
 
 
 class GamesTest(unittest.TestCase):
