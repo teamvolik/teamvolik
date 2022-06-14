@@ -3,6 +3,7 @@ from telegram import ReplyKeyboardMarkup
 
 from teamvolik.classes import player, game
 from teamvolik.bot.utils.localization import _
+from typing import List
 
 yes_no_kb = [[_("Yes"), _("No")], [_("Cancel")]]
 user_menu_kb = [[_("Sign up for a game"), _("Leave the game")], [_("List of games")]]
@@ -26,7 +27,7 @@ def get_perm_kb(user: player.Player) -> ReplyKeyboardMarkup:
     return adm_menu_markup if user.is_adm else user_menu_markup
 
 
-def get_game_kb(games: list[game.Game]) -> list[list[str]]:
+def get_game_kb(games: List[game.Game]) -> List[List[str]]:
     """
     Get a template for games keyboard.
 
@@ -40,7 +41,7 @@ def get_game_kb(games: list[game.Game]) -> list[list[str]]:
     return games_kb
 
 
-def get_game_markup(games_kb: list[list[str]]) -> ReplyKeyboardMarkup:
+def get_game_markup(games_kb: List[List[str]]) -> ReplyKeyboardMarkup:
     """
     Get a keyboard containing upcoming games.
 
