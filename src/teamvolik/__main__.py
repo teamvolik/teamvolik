@@ -38,6 +38,7 @@ if __name__ == "__main__":
         new_config.writelines(["{\n", '  "token": "<YOUR-TELEGRAM-TOKEN>",\n', '  "admins": [<ADMIN-ID-1>, ...],\n', '  "db_fname": "DATABASE-FILENAME"\n', "}\n"])
         new_config.close()
         exit(0)
+
     try:
         bot = importlib.import_module("teamvolik.bot.bot")
         bot.start_bot(CONFIG_PATH)
