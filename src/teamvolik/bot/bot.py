@@ -2,7 +2,6 @@
 import json
 import locale
 import logging
-import os
 import sqlite3
 
 from telegram import Update, ReplyKeyboardMarkup
@@ -449,29 +448,17 @@ def leave_success(update: Update, context: CallbackContext) -> int:
 ) = range(11)
 
 
-def start_bot() -> None:
+def start_bot(config_path: str) -> None:
     """
     Start the bot.
 
+    :param ``config_path``: path to config file
     :return: None
     """
-    CONFIG_FOLDER = os.path.join("teamvolik", "userdata")
-    CONFIG_FNAME = "config.json"
-    CONFIG_PATH = os.path.join(CONFIG_FOLDER, CONFIG_FNAME)
-    if os.path.exists(CONFIG_PATH):
-        logger.debug(f"Found config.json with path: {CONFIG_PATH}")
-        with open(CONFIG_PATH, "r") as f:
-            config = json.loads(f.read())
-    else:
-        logger.error(f"No config.json file found. Creating {CONFIG_PATH}. Configure it and run bot again.")
-        os.makedirs(CONFIG_FOLDER)
-        new_config = open(CONFIG_PATH, "w")
-        new_config.writelines(["{\n", '  "token":  "<YOUR-TELEGRAM-TOKEN>",\n', '  "admins": [<ADMIN-ID-1>, ...],\n', '  "db_fname":  "DATABASE-FILENAME"\n', "}\n"])
-        new_config.close()
-        exit(0)
+    with open(config_path, "r") as f:
+        config = json.loads(f.read())
     updater = Updater(config["token"])
     dispatcher = updater.dispatcher
-
     global adms
     adms = config["admins"]
     global connect

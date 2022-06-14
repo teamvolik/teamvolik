@@ -1,4 +1,4 @@
-"""Init module file"""
+"""Init module file."""
 import os.path
 import sys
 
