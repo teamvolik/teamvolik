@@ -104,7 +104,7 @@ def task_installdeps():
                 "name": "python_version",
                 "short": "p",
                 "type": str,
-                "default": "python3.10",
+                "default": "python3",
             }
         ],
     }
