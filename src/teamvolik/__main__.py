@@ -35,7 +35,7 @@ if __name__ == "__main__":
     else:
         logger.error(f"No config.json file found. Creating {CONFIG_PATH}. Configure it and run bot again.")
         new_config = open(CONFIG_PATH, "w")
-        new_config.writelines(["{\n", '  "token": "<YOUR-TELEGRAM-TOKEN>",\n', '  "admins": ["<ADMIN-ID-1>", "..."],\n', '  "db_fname": "DATABASE-FILENAME"\n', "}\n"])
+        new_config.writelines(["{\n", '  "token": "<YOUR-TELEGRAM-TOKEN>",\n', '  "admins": [<ADMIN-ID-1>, ...],\n', '  "db_fname": "DATABASE-FILENAME"\n', "}\n"])
         new_config.close()
         exit(0)
     try:
