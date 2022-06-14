@@ -1,0 +1,11 @@
+pytz==2022.1
+toml==0.10.2
+python-telegram-bot==13.11
+pybabel==0.0.0.dev0
+pydocstyle==6.1.1
+flake8==4.0.1
+black==22.3.0
+bandit==1.7.4
+sphinx==5.0.1
+doit==0.36.0
+pytest==7.1.2
