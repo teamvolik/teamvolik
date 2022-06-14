@@ -15,6 +15,11 @@ def task_tests():
     }
 
 
+def task_sphinx():
+    """Generate html from sphinx."""
+    return {"targets": ["src/build/**"], "actions": ["cd src/ && make html"]}
+
+
 def task_cleanall():
     """Clean .build."""
     return {"actions": [(shutil.rmtree, [".build", True])]}
@@ -99,7 +104,7 @@ def task_installdeps():
                 "name": "python_version",
                 "short": "p",
                 "type": str,
-                "default": "python3.10",
+                "default": "python3",
             }
         ],
     }

@@ -1,5 +1,5 @@
-"""Init module file."""
+"""Root init module file."""
 import os
 import sys
 
-sys.path.append(os.path.join(os.getcwd(), "src"))
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "teamvolik"))

@@ -5,9 +5,9 @@ import datetime
 
 from typing import Tuple, List
 
-from teamvolik.classes import game
-from teamvolik.classes import player
-from teamvolik.classes import registration
+from ..classes import game
+from ..classes import player
+from ..classes import registration
 
 
 DATABASE_NAME: str = "database.sqlite"

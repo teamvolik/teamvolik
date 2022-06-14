@@ -1,4 +1,4 @@
-"""Main module file."""
+"""Main teamvolik module file."""
 import importlib
 import logging
 import os
@@ -20,12 +20,17 @@ def install_runtime_dependencies():
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger()
+    CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+    try:
+        bot = importlib.import_module("teamvolik.bot.bot")
+    except ModuleNotFoundError:
+        install_runtime_dependencies()
+        bot = importlib.import_module("teamvolik.bot.bot")
     TEAMVOLIK_DIR = os.path.join(os.path.expanduser("~"), ".teamvolik")
     if not os.path.exists(os.path.join(TEAMVOLIK_DIR)):
         os.mkdir(TEAMVOLIK_DIR)
     CONFIG_FNAME = "config.json"
     CONFIG_PATH = os.path.join(TEAMVOLIK_DIR, CONFIG_FNAME)
-    subprocess.check_call([sys.executable, "-m", "pybabel", "compile", "-l", "ru", "-D", "bot", "-d", f"{os.path.abspath(__name__)}/localization"])
     if os.path.exists(CONFIG_PATH):
         logger.debug(f"Found config.json with path: {CONFIG_PATH}")
         with open(CONFIG_PATH, "r") as f:
@@ -39,11 +44,6 @@ if __name__ == "__main__":
         new_config.writelines(["{\n", '  "token": "<YOUR-TELEGRAM-TOKEN>",\n', '  "admins": [<ADMIN-ID-1>, ...],\n', '  "db_fname": "DATABASE-FILENAME"\n', "}\n"])
         new_config.close()
         exit(0)
-
-    try:
-        bot = importlib.import_module("teamvolik.bot.bot")
-        bot.start_bot(CONFIG_PATH)
-    except ModuleNotFoundError:
-        install_runtime_dependencies()
-        bot = importlib.import_module("teamvolik.bot.bot")
-        bot.start_bot(CONFIG_PATH)
+    if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "localization", "ru", "LC_MESSAGES", "bot.mo")):
+        subprocess.check_call(["pybabel", "compile", "-l", "ru", "-D", "bot", "-d", os.path.join(os.path.dirname(os.path.abspath(__file__)), "localization")])  # nosec
+    bot.start_bot(CONFIG_PATH)
