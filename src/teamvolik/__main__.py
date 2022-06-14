@@ -25,7 +25,7 @@ if __name__ == "__main__":
         os.mkdir(TEAMVOLIK_DIR)
     CONFIG_FNAME = "config.json"
     CONFIG_PATH = os.path.join(TEAMVOLIK_DIR, CONFIG_FNAME)
-    subprocess.check_call([sys.executable, "-m", "pybabel", "compile", "-l", "ru", "-D", "bot", "-d", f"{os.path.abspath(__name__)}/localization"])
+    subprocess.check_call([sys.executable, "-m", "pybabel", "compile", "-l", "ru", "-D", "bot", "-d", f"{os.path.abspath(__name__)}/localization"])  # nosec
     if os.path.exists(CONFIG_PATH):
         logger.debug(f"Found config.json with path: {CONFIG_PATH}")
         with open(CONFIG_PATH, "r") as f:

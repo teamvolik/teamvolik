@@ -15,6 +15,11 @@ def task_tests():
     }
 
 
+def task_sphinx():
+    """Generate html from sphinx."""
+    return {"targets": ["src/build/**"], "actions": ["cd src/ && make html"]}
+
+
 def task_cleanall():
     """Clean .build."""
     return {"actions": [(shutil.rmtree, [".build", True])]}
