@@ -1,4 +1,4 @@
-"""Module that implements Registration class."""
+"""Module that implements Registration entity."""
 import datetime
 import pytz
 

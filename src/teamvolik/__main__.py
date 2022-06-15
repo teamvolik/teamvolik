@@ -1,4 +1,4 @@
-"""Main teamvolik module file."""
+"""Main teamvolikbot module."""
 import importlib
 import logging
 import os

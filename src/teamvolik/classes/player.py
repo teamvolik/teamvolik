@@ -1,4 +1,4 @@
-"""Module that implements Player class."""
+"""Module that implements Player entity."""
 
 
 class Player:

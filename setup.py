@@ -10,7 +10,7 @@ setup(
     packages=["teamvolik", "teamvolik.db", "teamvolik.bot", "teamvolik.bot.utils", "teamvolik.classes"],
     package_dir={"teamvolik": "src/teamvolik"},
     package_data={
-        "teamvolik": ["localization/ru/LC_MESSAGES/bot.po"],
+        "teamvolik": ["localization/ru/LC_MESSAGES/bot.mo"],
     },
     url="https://github.com/teamvolik/teamvolik",
     license="MIT",
