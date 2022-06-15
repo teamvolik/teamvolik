@@ -3,6 +3,7 @@
 # nosec
 import shutil
 import subprocess  # nosec
+import sys
 
 
 def task_tests():
@@ -10,7 +11,7 @@ def task_tests():
     return {
         "targets": [".build/pytest.results"],
         "task_dep": ["mkdir"],
-        "actions": ["pytest . > .build/pytest.results"],
+        "actions": [f"{sys.executable} -m pytest . > .build/pytest.results"],
         "clean": True,
     }
 
@@ -22,7 +23,7 @@ def task_sphinx():
 
 def task_cleanall():
     """Clean .build."""
-    return {"actions": [(shutil.rmtree, [".build", True])]}
+    return {"actions": [(shutil.rmtree, [".build", True]), (shutil.rmtree, ["build", True]), (shutil.rmtree, ["dist", True])]}
 
 
 def task_mkdir():
@@ -36,7 +37,7 @@ def task_mkdir():
 def task_localization():
     """Make babel localization."""
     return {
-        "actions": ["pybabel compile -l ru -D bot -d src/teamvolik/localization"],
+        "actions": [f"{sys.executable} -m pybabel compile -l ru -D bot -d src/teamvolik/localization"],
         "targets": ["src/localization/ru/LC_MESSAGES/bot.mo"],
         "clean": True,
     }
@@ -47,7 +48,7 @@ def task_pydocstyle():
     return {
         "targets": [".build/pydocstyle.results"],
         "task_dep": ["mkdir"],
-        "actions": ["pydocstyle . > .build/pydocstyle.results"],
+        "actions": [f"{sys.executable} -m pydocstyle . > .build/pydocstyle.results"],
         "clean": True,
     }
 
@@ -57,7 +58,7 @@ def task_flake8():
     return {
         "targets": [".build/flake8.results"],
         "task_dep": ["mkdir"],
-        "actions": ["flake8 . > .build/flake8.results"],
+        "actions": [f"{sys.executable} -m flake8 . > .build/flake8.results"],
         "clean": True,
     }
 
@@ -67,7 +68,7 @@ def task_black():
     return {
         "targets": [".build/black.results"],
         "task_dep": ["mkdir"],
-        "actions": ["black . 2> .build/black.results"],
+        "actions": [f"{sys.executable} -m black . 2> .build/black.results"],
         "clean": True,
     }
 
@@ -77,7 +78,7 @@ def task_bandit():
     return {
         "targets": [".build/bandit.results"],
         "task_dep": ["mkdir"],
-        "actions": ["bandit -r . > .build/bandit.results"],
+        "actions": [f"{sys.executable} -m bandit -r . > .build/bandit.results"],
         "clean": True,
     }
 
@@ -86,7 +87,7 @@ def task_all():
     """Run all tasks."""
     return {
         "actions": [],
-        "task_dep": ["bandit", "black", "flake8", "pydocstyle", "tests", "localization"],
+        "task_dep": ["bandit", "black", "flake8", "pydocstyle", "tests", "localization", "wheel"],
         "clean": True,
     }
 
@@ -104,7 +105,14 @@ def task_installdeps():
                 "name": "python_version",
                 "short": "p",
                 "type": str,
-                "default": "python3",
+                "default": "python3.10",
             }
         ],
+    }
+
+
+def task_wheel():
+    """Build wheel from sources."""
+    return {
+        "actions": [f"{sys.executable} setup.py bdist_wheel"],
     }

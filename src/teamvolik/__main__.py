@@ -44,6 +44,4 @@ if __name__ == "__main__":
         new_config.writelines(["{\n", '  "token": "<YOUR-TELEGRAM-TOKEN>",\n', '  "admins": [<ADMIN-ID-1>, ...],\n', '  "db_fname": "DATABASE-FILENAME"\n', "}\n"])
         new_config.close()
         exit(0)
-    if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "localization", "ru", "LC_MESSAGES", "bot.mo")):
-        subprocess.check_call(["pybabel", "compile", "-l", "ru", "-D", "bot", "-d", os.path.join(os.path.dirname(os.path.abspath(__file__)), "localization")])  # nosec
     bot.start_bot(CONFIG_PATH)
