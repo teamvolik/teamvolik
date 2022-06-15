@@ -1,4 +1,4 @@
-"""Module that implements Game class."""
+"""Module that implements Game entity."""
 import datetime
 
 

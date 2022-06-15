@@ -6,14 +6,19 @@
 Welcome to teamvolik's documentation!
 =====================================
 
-.. py:currentmodule:: teamvolik
-
-.. autosummary::
-   :recursive:
-
 .. image:: ../../.github/README_MISC/teamvolik.jpeg
 
 Here is a small API documentation for teamvolik bot.
+
+.. py:currentmodule:: teamvolik
+
+.. autosummary::
+   :toctree: _autosummary
+   :template: custom-module-template.rst
+   :recursive:
+
+   teamvolik
+
 
 Indices and tables
 ==================
