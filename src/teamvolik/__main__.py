@@ -2,7 +2,7 @@
 import logging
 import os
 
-from bot.bot import start_bot
+from .bot.bot import start_bot
 
 
 if __name__ == "__main__":
