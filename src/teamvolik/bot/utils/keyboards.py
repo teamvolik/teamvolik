@@ -48,6 +48,6 @@ def get_game_markup(games_kb: List[List[str]]) -> ReplyKeyboardMarkup:
     :param games_kb: a list containing other lists that will later become buttons
     :return: ReplyKeyboardMapkup
     """
-    if games_kb[-1] != _("Cancel"):
-        games_kb.append(_("Cancel"))
+    if games_kb[-1] != [_("Cancel")]:
+        games_kb.append([_("Cancel")])
     return ReplyKeyboardMarkup(games_kb, one_time_keyboard=True, resize_keyboard=True)
