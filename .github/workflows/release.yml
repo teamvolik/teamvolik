@@ -1,10 +1,10 @@
+name: Release
+
 on:
   push:
-    [main]
+    branches: [ main ]
     tags:
-    - 'v*'
-
-name: Release
+      - 'v*'
 
 jobs:
   build:
