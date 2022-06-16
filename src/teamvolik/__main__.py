@@ -1,31 +1,13 @@
 """Main teamvolikbot module."""
-import importlib
 import logging
 import os
-import subprocess  # nosec
-import sys
 
-
-def install_runtime_dependencies():
-    """Install all necessary prod dependencies."""
-    packages = [
-        "python-telegram-bot==13.11",
-        "pytz==2022.1",
-        "pybabel==0.0.0.dev0",
-    ]
-    for package in packages:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", package])  # nosec
+from .bot.bot import start_bot
 
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger()
-    CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-    try:
-        bot = importlib.import_module("teamvolik.bot.bot")
-    except ModuleNotFoundError:
-        install_runtime_dependencies()
-        bot = importlib.import_module("teamvolik.bot.bot")
     TEAMVOLIK_DIR = os.path.join(os.path.expanduser("~"), ".teamvolik")
     if not os.path.exists(os.path.join(TEAMVOLIK_DIR)):
         os.mkdir(TEAMVOLIK_DIR)
@@ -44,4 +26,4 @@ if __name__ == "__main__":
         new_config.writelines(["{\n", '  "token": "<YOUR-TELEGRAM-TOKEN>",\n', '  "admins": [<ADMIN-ID-1>, ...],\n', '  "db_fname": "DATABASE-FILENAME"\n', "}\n"])
         new_config.close()
         exit(0)
-    bot.start_bot(CONFIG_PATH)
+    start_bot(CONFIG_PATH, TEAMVOLIK_DIR)

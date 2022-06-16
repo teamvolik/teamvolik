@@ -37,7 +37,7 @@ def task_mkdir():
 def task_localization():
     """Make babel localization."""
     return {
-        "actions": [f"{sys.executable} -m pybabel compile -l ru -D bot -d src/teamvolik/localization"],
+        "actions": ["pybabel compile -l ru -D bot -d src/teamvolik/localization"],
         "targets": ["src/localization/ru/LC_MESSAGES/bot.mo"],
         "clean": True,
     }
