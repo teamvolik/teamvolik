@@ -10,3 +10,4 @@ teamvolik.egg-info/
 test/_trial_temp
 src/teamvolik/userdata
 venv/
+.doit.db
