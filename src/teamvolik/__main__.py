@@ -26,4 +26,4 @@ if __name__ == "__main__":
         new_config.writelines(["{\n", '  "token": "<YOUR-TELEGRAM-TOKEN>",\n', '  "admins": [<ADMIN-ID-1>, ...],\n', '  "db_fname": "DATABASE-FILENAME"\n', "}\n"])
         new_config.close()
         exit(0)
-    start_bot(CONFIG_PATH)
+    start_bot(CONFIG_PATH, TEAMVOLIK_DIR)

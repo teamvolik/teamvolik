@@ -2,11 +2,13 @@
 import json
 import locale
 import logging
+import os.path
 import sqlite3
 
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext, ConversationHandler
 from telegram.ext.filters import Filters
+from typing import List
 
 from .utils import keyboards as kb
 from .utils.reply_list import reply_list as reply
@@ -235,8 +237,8 @@ def reg_game(update: Update, context: CallbackContext) -> int:
     :return: int
     """
     user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
-    games: list[game.Game] = db.get_future_games(cursor)
-    user_games: list[int] = list(map(lambda x: x.game_id, db.get_registrations_by_player_id(cursor, user.id)))
+    games: List[game.Game] = db.get_future_games(cursor)
+    user_games: List[int] = list(map(lambda x: x.game_id, db.get_registrations_by_player_id(cursor, user.id)))
 
     if user.id < 0:
         update.message.reply_text(reply["error_not_registered"], reply_markup=kb.start_markup)
@@ -263,7 +265,7 @@ def reg_accept(update: Update, context: CallbackContext) -> int:  # TODO пер�
     :return: int
     """
     answer: str = update.message.text
-    games_list: list[list[str]] = context.chat_data["game_list"]
+    games_list: List[List[str]] = context.chat_data["game_list"]
     user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
     chosen_game: game.Game
 
@@ -321,7 +323,7 @@ def games_show_available_list(update: Update, context: CallbackContext) -> int:
     :return: int
     """
     user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
-    games: list[game.Game] = db.get_future_games(cursor)
+    games: List[game.Game] = db.get_future_games(cursor)
 
     if user.id < 0:
         update.message.reply_text(reply["error_not_registered"], reply_markup=kb.start_markup)
@@ -346,7 +348,7 @@ def games_show_players(update: Update, context: CallbackContext) -> int:
     """
     user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
     answer: str = update.message.text
-    games_kb: list[list[str]] = context.chat_data["game_list"]
+    games_kb: List[List[str]] = context.chat_data["game_list"]
     chosen_game: game.Game
 
     if [answer] not in games_kb:
@@ -355,7 +357,7 @@ def games_show_players(update: Update, context: CallbackContext) -> int:
 
     game_id = int(answer.split("]")[0][1:])
     chosen_game = db.get_game_by_id(cursor, game_id)
-    players_in_chosen_game: list[registration.Registration] = db.get_registrations_by_game_id(cursor, chosen_game.id)
+    players_in_chosen_game: List[registration.Registration] = db.get_registrations_by_game_id(cursor, chosen_game.id)
 
     if len(players_in_chosen_game) == 0:
         update.message.reply_text(reply["no_players_yet"], reply_markup=kb.get_perm_kb(user))
@@ -391,7 +393,7 @@ def leave_game(update: Update, context: CallbackContext) -> int:
     :return: int
     """
     user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
-    user_games: list[game.Game] = db.get_games_by_player_id(cursor, user.id)
+    user_games: List[game.Game] = db.get_games_by_player_id(cursor, user.id)
 
     if user.id < 0:
         update.message.reply_text(reply["error_not_registered"], reply_markup=kb.start_markup)
@@ -400,7 +402,7 @@ def leave_game(update: Update, context: CallbackContext) -> int:
     if len(user_games) == 0:
         update.message.reply_text(reply["no_games_yet"], reply_markup=kb.get_perm_kb(user))
         return ConversationHandler.END
-    games_kb: list[list[str]] = kb.get_game_kb(user_games)
+    games_kb: List[List[str]] = kb.get_game_kb(user_games)
     context.chat_data["game_list"] = games_kb
     update.message.reply_text(reply["choose_game_to_leave"], reply_markup=kb.get_game_markup(games_kb))
     return ASKED_GAME_TO_LEAVE
@@ -416,7 +418,7 @@ def leave_success(update: Update, context: CallbackContext) -> int:
     """
     user: player.Player = db.get_player_by_id(cursor, update.message.chat_id)
     answer: str = update.message.text
-    games_kb: list[list[str]] = context.chat_data["game_list"]
+    games_kb: List[List[str]] = context.chat_data["game_list"]
     chosen_games: game.Game
 
     if [answer] not in games_kb:
@@ -448,11 +450,12 @@ def leave_success(update: Update, context: CallbackContext) -> int:
 ) = range(11)
 
 
-def start_bot(config_path: str) -> None:
+def start_bot(config_path: str, teamvolik_dir: str) -> None:
     """
     Start the bot.
 
     :param ``config_path``: path to config file
+    :param ``config_path``: path to teamvolik utility directory
     :return: None
     """
     with open(config_path, "r") as f:
@@ -461,8 +464,10 @@ def start_bot(config_path: str) -> None:
     dispatcher = updater.dispatcher
     global adms
     adms = config["admins"]
+    db_path = os.path.join(teamvolik_dir, config["db_fname"])
+    print(db_path)
     global connect
-    connect = sqlite3.connect(config["db_fname"], check_same_thread=False)
+    connect = sqlite3.connect(db_path, check_same_thread=False)
     global cursor
     cursor = connect.cursor()
     db.create_tables(connect, cursor)
