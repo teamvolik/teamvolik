@@ -17,4 +17,8 @@ setup(
     author="sanyavertolet, dgreflex",
     author_email="sanya-vertolet@yandex.ru",
     description="Telegram bot for signing up for volleyball games.",
+    install_requires=[
+        "python-telegram-bot==13.11",
+        "pytz==2022.1",
+    ],
 )
